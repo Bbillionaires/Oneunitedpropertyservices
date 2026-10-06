@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ServiceArea from '@/components/ServiceArea.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import heroImg from '@/assets/placeholders/multifamily-waterfront.jpg';
+---
+
+<BaseLayout
+  title="Service Area — Jacksonville & Northeast Florida"
+  description="One United Property Services provides commercial and multifamily property maintenance in Jacksonville and Northeast Florida."
+>
+  <PageHero
+    eyebrow="Service area"
+    title={'Jacksonville &\n*Northeast Florida.*'}
+    lead="Property maintenance for apartment communities, multifamily, and commercial properties in our home market."
+    image={heroImg}
+    imageAlt="Multifamily residences with palm trees along a calm waterway"
+    crumbs={[{ label: 'Service Area' }]}
+  />
+  <ServiceArea />
+  <CtaBand
+    title={'Not sure if we cover\n*your property?*'}
+    text="Send us the property address with your quote request and we’ll confirm whether it’s within our service area."
+    label="Check My Property"
+  />
+</BaseLayout>

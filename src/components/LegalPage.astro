@@ -1,0 +1,50 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHero title={title} crumbs={[{ label: title }]} compact />
+  <section class="section section--light">
+    <div class="container">
+      <aside class="legal-note" role="note">
+        <span class="placeholder-tag">Draft</span>
+        <p>
+          This page is a starting template, not legal advice. Have it reviewed and completed by qualified counsel before
+          launch. Bracketed items need to be filled in.
+        </p>
+      </aside>
+      <div class="prose legal">
+        <slot />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal-note {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    max-width: 70ch;
+    margin-bottom: 2.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px dashed var(--accent-ink);
+    border-radius: var(--radius);
+    background: #fbf6ea;
+    font-size: var(--fs-sm);
+  }
+  .legal :global(h2) {
+    text-transform: none;
+    font-stretch: 105%;
+  }
+  .legal {
+    color: #2b3036;
+  }
+</style>

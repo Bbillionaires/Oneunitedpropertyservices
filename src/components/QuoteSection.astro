@@ -1,0 +1,107 @@
+---
+import QuoteForm from './QuoteForm.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  headingAs?: 'h1' | 'h2';
+  id?: string;
+}
+const { headingAs = 'h2', id = 'quote' } = Astro.props;
+
+const nextSteps = [
+  { title: 'Share the details', text: 'Property type, services, size, and how often you need help.' },
+  { title: 'We review the property', text: 'Photos and notes help us understand scope before we talk.' },
+  { title: 'We follow up', text: 'We’ll reach out using your preferred method to discuss scope and scheduling.' },
+];
+---
+
+<section id={id} class="quote section section--dark" aria-labelledby={`${id}-title`} data-hide-mobile-cta>
+  <div class="quote__bg" aria-hidden="true"></div>
+  <div class="container quote__grid">
+    <div class="quote__intro">
+      <SectionHeading
+        id={`${id}-title`}
+        as={headingAs}
+        eyebrow="Request a property quote"
+        title={'Tell us about\nyour *property.*'}
+        lead="A few quick questions — about two minutes. Works for a single project, recurring service, or an entire portfolio."
+      />
+      <ol class="quote__steps" role="list" data-reveal-group="120">
+        {
+          nextSteps.map((s, i) => (
+            <li data-reveal>
+              <span class="quote__step-num">{i + 1}</span>
+              <div>
+                <h3>{s.title}</h3>
+                <p class="muted">{s.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="quote__form" data-reveal>
+      <QuoteForm id={`${id}-form`} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .quote {
+    overflow: hidden;
+  }
+  .quote__bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 50% at 85% 10%, rgba(216, 162, 62, 0.14), transparent 70%),
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 100% 72px;
+    pointer-events: none;
+  }
+  .quote__grid {
+    position: relative;
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+  .quote__steps {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+    counter-reset: s;
+  }
+  .quote__steps li {
+    display: flex;
+    gap: 1rem;
+  }
+  .quote__step-num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+  }
+  .quote__steps h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+  }
+  .quote__steps p {
+    font-size: var(--fs-sm);
+  }
+  @media (min-width: 1024px) {
+    .quote__grid {
+      grid-template-columns: 0.8fr 1.2fr;
+    }
+    .quote__intro {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+</style>

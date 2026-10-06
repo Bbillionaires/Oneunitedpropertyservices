@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import QuoteSection from '@/components/QuoteSection.astro';
+import ContactValue from '@/components/ContactValue.astro';
+import Icon from '@/components/Icon.astro';
+import type { IconName } from '@/components/icons';
+import { site } from '@/data/site';
+
+const cards: { key: keyof typeof site.contact; icon: IconName }[] = [
+  { key: 'phone', icon: 'phone' },
+  { key: 'email', icon: 'mail' },
+  { key: 'address', icon: 'pin' },
+  { key: 'hours', icon: 'clock' },
+];
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact One United Property Services about property maintenance for your apartment community, multifamily, or commercial property in Jacksonville and Northeast Florida."
+>
+  <PageHero
+    eyebrow="Contact"
+    title={'Let’s talk about\n*your property.*'}
+    lead="The fastest way to reach us is the property quote request below — it gives us the details we need to follow up."
+    crumbs={[{ label: 'Contact' }]}
+    compact
+  >
+    <div class="hero-stage" style="--d:750ms">
+      <a class="btn" href="#quote">Request a Property Quote <Icon name="arrowRight" size={18} /></a>
+    </div>
+  </PageHero>
+
+  <section class="section section--paper contact-cards-wrap">
+    <div class="container">
+      <ul class="contact-cards" role="list" data-reveal-group="90">
+        {
+          cards.map(({ key, icon }) => {
+            const f = site.contact[key];
+            return (
+              <li class="contact-card" data-reveal>
+                <span class="contact-card__icon">
+                  <Icon name={icon} size={24} />
+                </span>
+                <h2 class="contact-card__label">{f.label}</h2>
+                <p class="contact-card__value">
+                  <ContactValue field={f} />
+                </p>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+
+  <QuoteSection />
+</BaseLayout>
+
+<style>
+  .contact-cards-wrap {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+  .contact-cards {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  }
+  .contact-card {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    padding: 1.75rem;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .contact-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .contact-card__label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.2em;
+    color: var(--accent-ink);
+    font-stretch: 100%;
+  }
+  .contact-card__value {
+    font-weight: 600;
+  }
+  .contact-card__value :global(.icon) {
+    display: none;
+  }
+</style>

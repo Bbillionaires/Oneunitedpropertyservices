@@ -1,0 +1,264 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import BeforeAfterSlider from '@/components/BeforeAfterSlider.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { services, type Service } from '@/data/services';
+import { comparisons } from '@/data/beforeAfter';
+import { site } from '@/data/site';
+import { primaryArea } from '@/data/serviceAreas';
+import { quoteHref } from '@/data/navigation';
+
+export const getStaticPaths = (() => services.map((service) => ({ params: { slug: service.slug }, props: { service } }))) satisfies GetStaticPaths;
+
+interface Props {
+  service: Service;
+}
+const { service } = Astro.props;
+const others = services.filter((s) => s.slug !== service.slug);
+
+// Show a relevant comparison when one exists for this service.
+const comparisonFor: Record<string, string> = {
+  'lawn-grounds-care': 'landscaping',
+  'pressure-washing': 'pressure-washing',
+  painting: 'painting',
+  'property-turnovers': 'turnovers',
+  'general-maintenance': 'property-cleanup',
+};
+const comparison = comparisons.find((c) => c.id === comparisonFor[service.slug]);
+const quoteLink = `${quoteHref}?service=${service.quoteValue}`;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.title,
+    serviceType: service.title,
+    description: service.summary,
+    url: `${site.url}/services/${service.slug}/`,
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: { '@type': 'Place', name: `${primaryArea.name}, ${primaryArea.region}` },
+    audience: { '@type': 'BusinessAudience', name: 'Property managers, owners, and commercial clients' },
+  },
+];
+---
+
+<BaseLayout title={service.seoTitle} description={service.seoDescription} schema={schema}>
+  <PageHero
+    eyebrow="Service"
+    title={service.title}
+    lead={service.summary}
+    image={service.image}
+    imageAlt={service.imageAlt}
+    crumbs={[{ label: 'Services', href: '/services/' }, { label: service.title }]}
+  >
+    <div class="sv-hero-actions hero-stage" style="--d:750ms">
+      <a class="btn" href={quoteLink}>Request a Quote <Icon name="arrowRight" size={18} /></a>
+    </div>
+  </PageHero>
+
+  <section class="section section--light">
+    <div class="container sv-grid">
+      <div>
+        <SectionHeading eyebrow="Overview" title={`${service.shortTitle} built for\n*commercial properties.*`} size="h2" />
+        <p class="lead muted sv-intro" data-reveal>{service.intro}</p>
+        <div class="sv-ideal" data-reveal>
+          <h3>Common settings</h3>
+          <ul role="list">
+            {service.idealFor.map((i) => <li>{i}</li>)}
+          </ul>
+        </div>
+      </div>
+      <div class="sv-scope" data-reveal="left">
+        <h3 class="sv-scope__title">What this can include</h3>
+        <ul role="list" class="sv-scope__list" data-reveal-group="70">
+          {
+            service.scope.map((item, i) => (
+              <li data-reveal>
+                <span class="sv-scope__n">{String(i + 1).padStart(2, '0')}</span>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="sv-scope__note">Scope is confirmed for each property during the quote process.</p>
+      </div>
+    </div>
+  </section>
+
+  {
+    comparison && (
+      <section class="section section--dark">
+        <div class="container">
+          <SectionHeading eyebrow="See the difference" title={comparison.title} size="h2" />
+          <div class="sv-ba" data-reveal>
+            <BeforeAfterSlider
+              before={comparison.before}
+              after={comparison.after}
+              beforeAlt={comparison.beforeAlt}
+              afterAlt={comparison.afterAlt}
+              label={comparison.title}
+              placeholder={comparison.placeholder}
+            />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHeading eyebrow="Bundle services" title={'Pair it with\n*more of what you need.*'} size="h2" lead="Combine services into one recurring plan — one team, one schedule." />
+      <ul class="sv-others" role="list" data-reveal-group="90">
+        {
+          others.map((o) => (
+            <li data-reveal>
+              <a class="sv-other" href={`/services/${o.slug}/`}>
+                <div class="sv-other__media">
+                  <Image src={o.image} alt="" widths={[480, 720]} sizes="(min-width: 960px) 25vw, (min-width: 640px) 50vw, 100vw" loading="lazy" />
+                </div>
+                <div class="sv-other__body">
+                  <Icon name={o.icon} size={22} />
+                  <h3>{o.title}</h3>
+                  <Icon name="arrowUpRight" size={18} class="sv-other__arrow" />
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title={`Need ${service.shortTitle.toLowerCase()}\n*for your property?*`} href={quoteLink} />
+</BaseLayout>
+
+<style>
+  .sv-hero-actions {
+    margin-top: 0.75rem;
+  }
+  .sv-grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+  .sv-intro {
+    margin-top: 1.5rem;
+  }
+  .sv-ideal {
+    margin-top: 2rem;
+  }
+  .sv-ideal h3,
+  .sv-scope__title {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: 1rem;
+  }
+  .sv-ideal ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .sv-ideal li {
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .sv-scope {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    align-self: start;
+  }
+  .sv-scope__list li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-lg);
+    font-weight: 600;
+  }
+  .sv-scope__n {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-ink);
+    letter-spacing: 0.1em;
+  }
+  .sv-scope__note {
+    margin-top: 1.25rem;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .sv-ba {
+    margin-top: 2.5rem;
+  }
+  .sv-others {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  }
+  .sv-other {
+    display: block;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid var(--line);
+    text-decoration: none;
+    transition:
+      transform 500ms var(--ease-out),
+      box-shadow 500ms var(--ease-out);
+  }
+  .sv-other__media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .sv-other__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1200ms var(--ease-out);
+  }
+  .sv-other__body {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 1.25rem;
+  }
+  .sv-other__body h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .sv-other__body :global(.icon) {
+    color: var(--accent-ink);
+    flex: none;
+  }
+  .sv-other :global(.sv-other__arrow) {
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .sv-other:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(13, 15, 18, 0.12);
+  }
+  .sv-other:hover .sv-other__media :global(img) {
+    transform: scale(1.08);
+  }
+  .sv-other:hover :global(.sv-other__arrow) {
+    transform: translate(3px, -3px);
+  }
+  @media (min-width: 960px) {
+    .sv-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

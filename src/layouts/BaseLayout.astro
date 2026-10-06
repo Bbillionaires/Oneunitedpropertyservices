@@ -1,0 +1,78 @@
+---
+import '@fontsource-variable/archivo/wdth.css';
+import '@/styles/global.css';
+import fontLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import SEO, { type SEOProps } from '@/components/SEO.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import MobileCTA from '@/components/MobileCTA.astro';
+
+type Props = SEOProps & {
+  /** Hide the floating mobile CTA (e.g. on the quote page). */
+  hideMobileCta?: boolean;
+  /** Preload the LCP hero image. */
+  preloadImage?: { src: string; srcset?: string; sizes?: string; type?: string };
+};
+
+const { hideMobileCta = false, preloadImage, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0d0f12" />
+    <meta name="format-detection" content="telephone=no" />
+    <script is:inline>
+      // Enable motion styles only when the visitor hasn't asked for reduced motion.
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion-ok');
+    </script>
+    <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin />
+    {
+      preloadImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={preloadImage.src}
+          imagesrcset={preloadImage.srcset}
+          imagesizes={preloadImage.sizes}
+          type={preloadImage.type}
+          fetchpriority="high"
+        />
+      )
+    }
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <SEO {...seo} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    {!hideMobileCta && <MobileCTA />}
+
+    <script>
+      import { initMotion } from '@/scripts/motion';
+      import { initHeader } from '@/scripts/header';
+      initHeader();
+      initMotion();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  html.no-scroll,
+  html.no-scroll body {
+    overflow: hidden;
+  }
+  main:focus {
+    outline: none;
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import LegalPage from '@/components/LegalPage.astro';
+import { site } from '@/data/site';
+---
+
+<LegalPage title="Privacy Policy" description={`How ${site.name} collects and uses information submitted through this website.`}>
+  <p><strong>Last updated:</strong> [Date]</p>
+  <p>
+    This Privacy Policy explains how {site.name} (“we,” “us”), {site.parentLine.toLowerCase()}, collects, uses, and
+    protects information you provide through {site.domain}.
+  </p>
+
+  <h2>Information we collect</h2>
+  <ul>
+    <li>
+      <strong>Information you submit:</strong> when you request a quote or contact us, we collect the details you enter —
+      such as your name, company, phone number, email address, property address, property details, service needs, and any
+      photos you upload.
+    </li>
+    <li>
+      <strong>Technical information:</strong> like most websites, our hosting provider may automatically log basic
+      technical data such as IP address, browser type, and pages visited. [Describe any analytics tools if added.]
+    </li>
+  </ul>
+
+  <h2>How we use information</h2>
+  <ul>
+    <li>To respond to your quote request or inquiry and to provide requested services.</li>
+    <li>To communicate with you using your preferred contact method.</li>
+    <li>To operate, maintain, and improve this website.</li>
+  </ul>
+
+  <h2>How information is shared</h2>
+  <p>
+    We do not sell your personal information. We may share information with service providers that help us operate our
+    business (for example, form delivery, email, or customer-management tools), only as needed to provide those services,
+    or when required by law. [List providers once selected.]
+  </p>
+
+  <h2>Data retention</h2>
+  <p>We keep submitted information only as long as needed for the purposes described above. [Specify retention period.]</p>
+
+  <h2>Your choices</h2>
+  <p>You may ask us to access, correct, or delete information you have submitted by contacting us at [contact email].</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy can be sent to [contact email / mailing address].</p>
+</LegalPage>

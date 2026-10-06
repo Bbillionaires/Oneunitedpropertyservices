@@ -1,0 +1,173 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import WhyOneUnited from '@/components/WhyOneUnited.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Icon from '@/components/Icon.astro';
+import type { IconName } from '@/components/icons';
+import { site } from '@/data/site';
+import heroImg from '@/assets/placeholders/office-palms.jpg';
+import teamImg from '@/assets/placeholders/planning-docs.jpg';
+
+const principles: { title: string; text: string; icon: IconName }[] = [
+  { title: 'One relationship', text: 'A single point of contact for the routine work your property needs, instead of a roster of vendors.', icon: 'handshake' },
+  { title: 'Built around the property', text: 'Services and schedules are shaped by how each property operates — not a one-size-fits-all package.', icon: 'sliders' },
+  { title: 'Consistent standards', text: 'The same expectations applied across every service and, for portfolios, across every property.', icon: 'layers' },
+  { title: 'Clear communication', text: 'Straightforward scoping and follow-up, so managers and owners know what’s happening on site.', icon: 'clipboard' },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="One United Property Services is a One United Enterprise company providing property maintenance and exterior improvement services for multifamily and commercial properties in Jacksonville and Northeast Florida."
+>
+  <PageHero
+    eyebrow="About"
+    title={'One property.\nOne team.\n*One United.*'}
+    lead={`${site.name} is a ${site.parent} company focused on maintenance for multifamily and commercial properties.`}
+    image={heroImg}
+    imageAlt="Glass office building framed by palm trees"
+    crumbs={[{ label: 'About' }]}
+  />
+
+  <section class="section section--light">
+    <div class="container about-grid">
+      <div>
+        <SectionHeading eyebrow="Who we are" title={'Complete property care\nunder *one name.*'} size="h2" />
+        <div class="prose about-copy" data-reveal>
+          <p>
+            {site.name} provides property maintenance and exterior improvement services for apartment communities,
+            multifamily properties, and commercial, retail, and office properties — along with the property managers,
+            real estate investors, and community associations responsible for them.
+          </p>
+          <p>
+            Our services cover the work that keeps a property presentable and functional: lawn and grounds care,
+            pressure washing, interior and exterior painting, unit turnovers, and general maintenance. Bringing them
+            together means fewer vendors to manage and one team accountable for how the property looks.
+          </p>
+          <p>
+            We are part of <strong>{site.parent}</strong>, serving {site.primaryMarket}.
+          </p>
+        </div>
+      </div>
+      <div class="about-media" data-reveal="image">
+        <Image src={teamImg} alt="Property manager reviewing and signing a service agreement" widths={[640, 960]} sizes="(min-width: 960px) 45vw, 100vw" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHeading eyebrow="How we work" title={'The standard behind\n*every visit.*'} size="h2" />
+      <ul class="principles" role="list" data-reveal-group="100">
+        {
+          principles.map((p, i) => (
+            <li class="principle" data-reveal>
+              <span class="principle__n">0{i + 1}</span>
+              <span class="principle__icon"><Icon name={p.icon} size={26} /></span>
+              <h3>{p.title}</h3>
+              <p class="muted">{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <aside class="story-placeholder" data-reveal aria-label="Company story placeholder">
+        <span class="placeholder-tag">Placeholder</span>
+        <h3>Our story</h3>
+        <p>
+          Company history, leadership, and team details will appear here once provided. This section is intentionally
+          left as a placeholder so no unverified facts are published.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <WhyOneUnited />
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .about-grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .about-copy {
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: var(--fs-lg);
+  }
+  .about-copy strong {
+    color: var(--text);
+  }
+  .about-media {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+  }
+  .about-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (min-width: 960px) {
+    .about-grid {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+  .principles {
+    display: grid;
+    gap: 1rem;
+    margin-top: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  }
+  .principle {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+    padding: 2rem 1.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+  }
+  .principle__n {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .principle__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--accent);
+  }
+  .principle h3 {
+    font-size: 1.15rem;
+    text-transform: uppercase;
+  }
+  .story-placeholder {
+    display: grid;
+    gap: 0.6rem;
+    justify-items: start;
+    margin-top: 2.5rem;
+    padding: 1.75rem;
+    border: 2px dashed rgba(21, 24, 28, 0.25);
+    border-radius: var(--radius-lg);
+    color: var(--text-muted);
+  }
+  .story-placeholder h3 {
+    font-size: var(--fs-lg);
+    text-transform: uppercase;
+    color: var(--text);
+  }
+</style>

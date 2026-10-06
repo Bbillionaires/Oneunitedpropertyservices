@@ -1,0 +1,224 @@
+---
+/**
+ * "See the Difference" — tabbed before/after comparisons by category.
+ * Uses the WAI-ARIA tabs pattern; each panel contains a BeforeAfterSlider.
+ */
+import BeforeAfterSlider from './BeforeAfterSlider.astro';
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import { comparisons } from '@/data/beforeAfter';
+
+interface Props {
+  showLink?: boolean;
+  headingAs?: 'h1' | 'h2';
+}
+const { showLink = true, headingAs = 'h2' } = Astro.props;
+const uid = 'ba';
+---
+
+<section id="before-after" class="see section section--dark" aria-labelledby="see-title">
+  <div class="see__glow" aria-hidden="true"></div>
+  <div class="container">
+    <div class="see__head">
+      <SectionHeading
+        id="see-title"
+        as={headingAs}
+        eyebrow="Before & After"
+        title={'See the *Difference.*'}
+        lead="Drag the slider to compare. Every comparison is built from a reusable component, ready for real project photography."
+      />
+    </div>
+
+    <div class="see__tabs" data-tabs data-reveal>
+      <div class="see__tablist" role="tablist" aria-label="Before and after categories">
+        {
+          comparisons.map((c, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`${uid}-tab-${c.id}`}
+              aria-controls={`${uid}-panel-${c.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              {c.category}
+            </button>
+          ))
+        }
+        <span class="see__indicator" aria-hidden="true"></span>
+      </div>
+
+      {
+        comparisons.map((c, i) => (
+          <div
+            class="see__panel"
+            role="tabpanel"
+            id={`${uid}-panel-${c.id}`}
+            aria-labelledby={`${uid}-tab-${c.id}`}
+            hidden={i !== 0}
+            tabindex="-1"
+          >
+            <BeforeAfterSlider
+              before={c.before}
+              after={c.after}
+              beforeAlt={c.beforeAlt}
+              afterAlt={c.afterAlt}
+              label={`${c.category}: ${c.title}`}
+              placeholder={c.placeholder}
+            />
+            <div class="see__caption">
+              <h3>{c.title}</h3>
+              <p class="muted">{c.caption}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      showLink && (
+        <div class="see__more" data-reveal>
+          <a class="link-arrow" href="/before-after/">
+            View all comparisons <Icon name="arrowRight" size={18} />
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .see {
+    overflow: hidden;
+  }
+  .see__glow {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    max-width: 900px;
+    max-height: 900px;
+    right: -20vw;
+    top: -10vw;
+    background: radial-gradient(circle, rgba(216, 162, 62, 0.16), transparent 65%);
+    pointer-events: none;
+  }
+  :global(.motion-ok) .see__glow {
+    animation: glow-drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes glow-drift {
+    to {
+      transform: translate(-18vw, 20vw);
+    }
+  }
+  .see__head {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .see__tablist {
+    position: relative;
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .see__tablist::-webkit-scrollbar {
+    display: none;
+  }
+  .see__tablist button {
+    flex: none;
+    padding: 1rem 1.1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-on-dark-muted);
+    transition: color var(--dur-fast);
+    min-height: 48px;
+  }
+  .see__tablist button:hover,
+  .see__tablist button[aria-selected='true'] {
+    color: var(--white);
+  }
+  .see__indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    width: var(--w, 0);
+    background: var(--accent);
+    transform: translateX(var(--x, 0));
+    transition:
+      transform 500ms var(--ease-out),
+      width 500ms var(--ease-out);
+  }
+  .see__panel:not([hidden]) {
+    animation: panel-in 700ms var(--ease-out);
+  }
+  .see__panel:focus {
+    outline: none;
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+  .see__caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    margin-top: 1.25rem;
+  }
+  .see__caption h3 {
+    font-size: var(--fs-lg);
+    text-transform: uppercase;
+  }
+  .see__more {
+    margin-top: 2.5rem;
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const indicator = root.querySelector<HTMLElement>('.see__indicator');
+    const list = root.querySelector<HTMLElement>('[role="tablist"]');
+
+    const moveIndicator = (tab: HTMLElement) => {
+      if (!indicator) return;
+      indicator.style.setProperty('--x', `${tab.offsetLeft}px`);
+      indicator.style.setProperty('--w', `${tab.offsetWidth}px`);
+    };
+
+    const select = (tab: HTMLButtonElement, focus = true) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+        if (panel) panel.hidden = !on;
+      });
+      if (focus) tab.focus();
+      moveIndicator(tab);
+      tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+        if (!(e.key in map)) return;
+        e.preventDefault();
+        select(tabs[(map[e.key] + tabs.length) % tabs.length]);
+      });
+    });
+
+    const current = () => tabs.find((t) => t.getAttribute('aria-selected') === 'true') ?? tabs[0];
+    moveIndicator(current());
+    new ResizeObserver(() => moveIndicator(current())).observe(list ?? root);
+  });
+</script>

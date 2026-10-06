@@ -1,0 +1,129 @@
+---
+/**
+ * Full-width commercial contract CTA: "Managing More Than One Property?"
+ */
+import { Image } from 'astro:assets';
+import SplitText from './SplitText.astro';
+import Icon from './Icon.astro';
+import bg from '@/assets/placeholders/apartment-balconies.jpg';
+import { quoteHref } from '@/data/navigation';
+
+const audiences = [
+  'Property management companies',
+  'Apartment operators',
+  'Real estate investors',
+  'Commercial owners',
+  'Portfolio managers',
+];
+---
+
+<section class="pcta" aria-labelledby="pcta-title">
+  <div class="pcta__media" aria-hidden="true">
+    <div class="pcta__parallax" data-parallax="0.18">
+      <Image src={bg} alt="" widths={[768, 1280, 1600]} sizes="100vw" loading="lazy" />
+    </div>
+  </div>
+  <div class="pcta__shade" aria-hidden="true"></div>
+
+  <div class="container pcta__inner">
+    <p class="eyebrow" data-reveal="fade">Portfolio &amp; commercial contracts</p>
+    <SplitText id="pcta-title" text={'Managing more than\n*one property?*'} class="display pcta__title" />
+    <p class="lead pcta__lead" data-reveal style="--reveal-delay:300">
+      Let’s build a maintenance solution around your portfolio.
+    </p>
+    <ul class="pcta__aud" role="list" aria-label="Built for" data-reveal-group="70">
+      {
+        audiences.map((a) => (
+          <li data-reveal>
+            <Icon name="check" size={16} strokeWidth={2.2} />
+            {a}
+          </li>
+        ))
+      }
+    </ul>
+    <div data-reveal style="--reveal-delay:400">
+      <a class="btn pcta__btn" href={`${quoteHref}?program=portfolio`}>
+        Request a Portfolio Quote <Icon name="arrowRight" size={20} />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pcta {
+    position: relative;
+    padding-block: clamp(6rem, 14vw, 12rem);
+    color: var(--white);
+    background: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .pcta__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .pcta__parallax {
+    position: absolute;
+    inset: -15% 0;
+  }
+  .pcta__parallax :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pcta__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(100deg, rgba(13, 15, 18, 0.95) 10%, rgba(13, 15, 18, 0.7) 55%, rgba(13, 15, 18, 0.35)),
+      linear-gradient(0deg, rgba(216, 162, 62, 0.18), transparent 50%);
+  }
+  .pcta__inner {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+  .pcta__title {
+    font-weight: 900;
+    font-stretch: 118%;
+    font-size: clamp(2.4rem, 1rem + 6vw, 6.5rem);
+  }
+  .pcta__lead {
+    font-size: var(--fs-xl);
+    color: rgba(255, 255, 255, 0.88);
+  }
+  .pcta__aud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: 52rem;
+  }
+  .pcta__aud li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(13, 15, 18, 0.35);
+  }
+  .pcta__aud :global(.icon) {
+    color: var(--accent);
+  }
+  .pcta__btn {
+    margin-top: 0.75rem;
+    min-height: 4rem;
+    padding-inline: 2rem;
+    font-size: 0.92rem;
+  }
+  @media (max-width: 520px) {
+    .pcta__inner > div,
+    .pcta__btn {
+      width: 100%;
+    }
+  }
+</style>

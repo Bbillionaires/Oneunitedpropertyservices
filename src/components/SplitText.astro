@@ -1,0 +1,53 @@
+---
+/**
+ * Build-time word splitting for headline reveal animations (no runtime cost,
+ * no layout shift). Screen readers get the plain sentence; the animated word
+ * spans are aria-hidden.
+ *
+ * Syntax: "\n" forces a line break, *word* renders in the accent color.
+ */
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+  text: string;
+  as?: HTMLTag;
+  class?: string;
+  /** Base delay in ms before the first word animates. */
+  delay?: number;
+  id?: string;
+}
+
+const { text, as: Tag = 'h2', class: className, delay = 0, id } = Astro.props;
+const plain = text.replace(/\*/g, '').replace(/\n/g, ' ');
+
+let i = 0;
+const lines = text.split('\n').map((line) =>
+  line
+    .split(' ')
+    .filter(Boolean)
+    .map((word) => {
+      const accent = word.startsWith('*') || word.endsWith('*');
+      return { word: word.replace(/\*/g, ''), accent, i: i++ };
+    }),
+);
+---
+
+<Tag class:list={['split', className]} data-split style={`--split-base:${delay}`} id={id}>
+  <span class="visually-hidden">{plain}</span>
+  <span aria-hidden="true">
+    {
+      lines.map((words) => (
+        <span class="split-line">
+          {words.map(({ word, accent, i }, idx) => (
+            <>
+              <span class:list={['split-word', { accent }]} style={`--i:${i}`}>
+                {word}
+              </span>
+              {idx < words.length - 1 ? ' ' : ''}
+            </>
+          ))}
+        </span>
+      ))
+    }
+  </span>
+</Tag>

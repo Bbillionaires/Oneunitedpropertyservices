@@ -1,0 +1,325 @@
+---
+/**
+ * "One Call. Multiple Property Needs." — the single-vendor advantage.
+ * The hub diagram draws itself on reveal; stats count up. Stats reflect
+ * facts of the offering itself (no invented business metrics).
+ */
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import { icons } from './icons';
+import { services } from '@/data/services';
+import { propertyTypes } from '@/data/propertyTypes';
+import { whyPoints } from '@/data/programs';
+
+const R = 150;
+const nodes = services.map((s, i) => {
+  const a = (-90 + (360 / services.length) * i) * (Math.PI / 180);
+  return { s, x: 200 + R * Math.cos(a), y: 200 + R * Math.sin(a) };
+});
+
+const stats = [
+  { value: services.length, label: 'Core property services' },
+  { value: propertyTypes.length, label: 'Property types served' },
+  { value: 1, label: 'Relationship to manage' },
+];
+---
+
+<section id="why" class="why section section--ink" aria-labelledby="why-title">
+  <div class="container why__grid">
+    <div class="why__copy">
+      <SectionHeading
+        id="why-title"
+        eyebrow="Why One United"
+        title={'One Call.\n*Multiple* Property Needs.'}
+      />
+      <p class="lead why__lead" data-reveal style="--reveal-delay:200">
+        Property managers shouldn't have to coordinate multiple vendors for routine property needs.
+      </p>
+      <p class="muted why__sub" data-reveal style="--reveal-delay:300">
+        One United Property Services brings multiple services under one relationship — one team to call, one schedule
+        to plan around, and one standard across the property.
+      </p>
+
+      <ul class="why__points" role="list" data-reveal-group="100">
+        {
+          whyPoints.map((p) => (
+            <li class="why__point" data-reveal>
+              <span class="why__icon">
+                <Icon name={p.icon} size={24} />
+              </span>
+              <div>
+                <h3>{p.title}</h3>
+                <p class="muted">{p.description}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="why__visual" data-reveal-trigger>
+      <svg class="hub" viewBox="0 0 400 400" role="img" aria-labelledby="hub-title">
+        <title id="hub-title">One United at the center of lawn care, pressure washing, painting, turnovers, and maintenance</title>
+        <circle class="hub__orbit" cx="200" cy="200" r={R} />
+        <circle class="hub__orbit hub__orbit--outer" cx="200" cy="200" r="188" />
+        {
+          nodes.map(({ x, y }, i) => (
+            <line class="hub__line" x1="200" y1="200" x2={x} y2={y} style={`--i:${i}`} pathLength="1" />
+          ))
+        }
+        <g class="hub__core">
+          <circle cx="200" cy="200" r="66" class="hub__core-ring" />
+          <circle cx="200" cy="200" r="56" class="hub__core-fill" />
+          <text x="200" y="196" text-anchor="middle" class="hub__core-text">ONE</text>
+          <text x="200" y="216" text-anchor="middle" class="hub__core-text">UNITED</text>
+        </g>
+        {
+          nodes.map(({ s, x, y }, i) => (
+            <g class="hub__node" style={`--i:${i}`}>
+              <circle cx={x} cy={y} r="27" />
+              <svg x={x - 12} y={y - 12} width="24" height="24" viewBox="0 0 24 24" class="hub__icon" set:html={icons[s.icon]} />
+              <text x={x} y={y + (y > 200 ? 46 : -36)} text-anchor="middle" class="hub__label">
+                {s.shortTitle}
+              </text>
+            </g>
+          ))
+        }
+      </svg>
+
+      <dl class="why__stats">
+        {
+          stats.map((s) => (
+            <div class="why__stat">
+              <dt>{s.label}</dt>
+              <dd>
+                <span data-count-to={s.value}>{s.value}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .why {
+    overflow: hidden;
+  }
+  .why__grid {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .why__lead {
+    margin-top: 1.75rem;
+    color: var(--white);
+    font-weight: 600;
+  }
+  .why__sub {
+    margin-top: 1rem;
+    max-width: 56ch;
+  }
+  .why__points {
+    display: grid;
+    gap: 1px;
+    margin-top: 2.5rem;
+    background: var(--line-dark);
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .why__point {
+    display: flex;
+    gap: 1rem;
+    padding: 1.4rem;
+    background: var(--ink);
+    transition: background var(--dur) var(--ease-out);
+  }
+  .why__point:hover {
+    background: var(--charcoal-2);
+  }
+  .why__point h3 {
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+  }
+  .why__point p {
+    font-size: var(--fs-sm);
+  }
+  .why__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border: 1px solid rgba(216, 162, 62, 0.45);
+    border-radius: var(--radius);
+    color: var(--accent);
+  }
+  @media (min-width: 640px) {
+    .why__points {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .why__grid {
+      grid-template-columns: 1.05fr 1fr;
+    }
+  }
+
+  /* Hub diagram */
+  .why__visual {
+    width: 100%;
+    max-width: 560px;
+    justify-self: center;
+  }
+  .hub {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .hub__orbit {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.14);
+    stroke-dasharray: 2 6;
+    transform-origin: 200px 200px;
+  }
+  .hub__orbit--outer {
+    stroke: rgba(216, 162, 62, 0.25);
+    stroke-dasharray: 1 10;
+  }
+  :global(.motion-ok) .hub__orbit {
+    animation: spin 80s linear infinite;
+  }
+  :global(.motion-ok) .hub__orbit--outer {
+    animation-direction: reverse;
+    animation-duration: 120s;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .hub__line {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .hub__core-ring {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+  }
+  .hub__core-fill {
+    fill: var(--accent);
+  }
+  .hub__core-text {
+    fill: var(--ink);
+    font-size: 15px;
+    font-weight: 900;
+    font-stretch: 118%;
+    letter-spacing: 0.04em;
+  }
+  .hub__node circle {
+    fill: var(--charcoal-2);
+    stroke: rgba(255, 255, 255, 0.3);
+    stroke-width: 1;
+    transition: fill var(--dur);
+  }
+  .hub__node:hover circle {
+    fill: var(--steel);
+  }
+  .hub__icon {
+    fill: none;
+    stroke: var(--white);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .hub__label {
+    fill: var(--text-on-dark-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  :global(.motion-ok) .hub__line {
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1200ms var(--ease-out);
+    transition-delay: calc(400ms + var(--i) * 120ms);
+  }
+  :global(.motion-ok) .hub__node {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.6);
+    transition:
+      opacity 600ms var(--ease-out),
+      transform 900ms var(--ease-out);
+    transition-delay: calc(900ms + var(--i) * 120ms);
+  }
+  :global(.motion-ok) .hub__core {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.7);
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 1000ms var(--ease-out);
+  }
+  :global(.motion-ok) .why__visual:global(.is-in) .hub__line {
+    stroke-dashoffset: 0;
+  }
+  :global(.motion-ok) .why__visual:global(.is-in) :is(.hub__node, .hub__core) {
+    opacity: 1;
+    transform: none;
+  }
+  :global(.motion-ok) .why__visual:global(.is-in) .hub__core-ring {
+    animation: pulse 3.2s var(--ease-out) infinite 1.6s;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+  }
+
+  .why__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--line-dark);
+    padding-top: 1.75rem;
+  }
+  .why__stat {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.4rem;
+  }
+  .why__stat dd {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 900;
+    font-stretch: 118%;
+    line-height: 1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .why__stat dt {
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-on-dark-muted);
+  }
+</style>

@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import QuoteSection from '@/components/QuoteSection.astro';
+import CtaBand from '@/components/CtaBand.astro';
+---
+
+<BaseLayout
+  title="Request a Property Quote"
+  description="Request a quote for lawn care, pressure washing, painting, turnovers, or general maintenance at your apartment community, multifamily, or commercial property."
+  hideMobileCta
+>
+  <div class="quote-page">
+    <QuoteSection headingAs="h1" />
+  </div>
+  <CtaBand
+    title={'Managing a *portfolio?*'}
+    text="Choose the portfolio option to request coordinated service across multiple properties."
+    href="/quote/?program=portfolio"
+    label="Start a Portfolio Quote"
+  />
+</BaseLayout>
+
+<style>
+  .quote-page :global(.quote) {
+    padding-top: calc(var(--header-h) + clamp(2.5rem, 6vw, 5rem));
+  }
+</style>

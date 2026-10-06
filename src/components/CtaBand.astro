@@ -1,0 +1,62 @@
+---
+/** Compact closing call-to-action used on interior pages. */
+import SplitText from './SplitText.astro';
+import Icon from './Icon.astro';
+import { quoteHref } from '@/data/navigation';
+
+interface Props {
+  title?: string;
+  text?: string;
+  href?: string;
+  label?: string;
+}
+const {
+  title = 'Ready when *your property is.*',
+  text = 'Tell us about the property and the services you need. One-time projects, recurring service, and portfolios welcome.',
+  href = quoteHref,
+  label = 'Request a Property Quote',
+} = Astro.props;
+---
+
+<section class="band section section--paper">
+  <div class="container">
+    <div class="band__inner">
+    <div>
+      <SplitText text={title} class="h2" />
+      <p class="lead muted" data-reveal style="--reveal-delay:200">{text}</p>
+    </div>
+    <div data-reveal style="--reveal-delay:300">
+      <a class="btn btn--dark" href={href}>{label} <Icon name="arrowRight" size={18} /></a>
+    </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .band {
+    padding-block: clamp(4rem, 8vw, 6.5rem);
+  }
+  .band__inner {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-lg);
+  }
+  .band__inner .lead {
+    margin-top: 1rem;
+  }
+  @media (min-width: 900px) {
+    .band__inner {
+      grid-template-columns: 1fr auto;
+    }
+  }
+  @media (max-width: 520px) {
+    .band .btn {
+      width: 100%;
+    }
+  }
+</style>

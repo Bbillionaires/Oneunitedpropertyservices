@@ -1,0 +1,139 @@
+---
+/**
+ * Statement section: words light up as the visitor scrolls through it,
+ * followed by a slow-moving service marquee.
+ */
+import { services } from '@/data/services';
+
+const statement =
+  'Grounds, surfaces, paint, unit turns, and everyday maintenance — handled by one accountable team, so your property looks and performs the way it should.';
+const words = statement.split(' ');
+---
+
+<section id="intro" class="intro section section--ink" aria-label="Introduction">
+  <div class="container">
+    <p class="eyebrow" data-reveal="fade">Complete property care</p>
+    <p class="intro__statement" data-scrub>
+      {words.map((w, i) => <span class="intro__word" style={`--w:${i}`}>{w} </span>)}
+    </p>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      {
+        [0, 1].map(() => (
+          <div class="marquee__group">
+            {services.map((s) => (
+              <span class="marquee__item">
+                {s.title}
+                <span class="marquee__dot" />
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro {
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+    overflow: hidden;
+  }
+  .intro__statement {
+    margin-top: 1.75rem;
+    max-width: 30ch;
+    font-size: var(--fs-2xl);
+    font-weight: 700;
+    font-stretch: 108%;
+    line-height: 1.18;
+    letter-spacing: -0.005em;
+  }
+  .intro__word {
+    transition: color 350ms var(--ease-out);
+  }
+  :global(.motion-ok) .intro__word {
+    color: rgba(255, 255, 255, 0.22);
+  }
+  :global(.motion-ok) .intro__word:global(.is-lit) {
+    color: var(--white);
+  }
+
+  .marquee {
+    margin-top: clamp(3.5rem, 8vw, 6.5rem);
+    border-block: 1px solid var(--line-dark);
+    padding-block: 1.4rem;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+  }
+  :global(.motion-ok) .marquee__track {
+    animation: marquee 38s linear infinite;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  .marquee__group {
+    display: flex;
+    flex: none;
+  }
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2.5rem;
+    padding-right: 2.5rem;
+    font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    font-stretch: 118%;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.45);
+  }
+  .marquee__item:nth-child(odd) {
+    color: var(--white);
+    -webkit-text-stroke: 0;
+  }
+  .marquee__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>
+
+<script>
+  import { motionAllowed } from '@/scripts/motion';
+
+  const el = document.querySelector<HTMLElement>('[data-scrub]');
+  if (el && motionAllowed()) {
+    const words = Array.from(el.querySelectorAll<HTMLElement>('.intro__word'));
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 when the block enters the lower viewport, 1 when it reaches the upper third.
+      const progress = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.45)));
+      const lit = Math.round(progress * words.length);
+      words.forEach((w, i) => w.classList.toggle('is-lit', i < lit));
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+  }
+</script>

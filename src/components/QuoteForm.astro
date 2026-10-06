@@ -1,0 +1,947 @@
+---
+/**
+ * Multi-step property quote request. Markup is generated from
+ * src/data/quoteForm.ts; behaviour lives in src/scripts/quote-form.ts;
+ * delivery is handled by src/lib/quote.ts.
+ */
+import Icon from './Icon.astro';
+import {
+  propertyOptions,
+  serviceOptions,
+  frequencyOptions,
+  contactMethodOptions,
+  sizeFields,
+  uploadLimits,
+  quoteSteps,
+} from '@/data/quoteForm';
+
+interface Props {
+  id?: string;
+}
+const { id = 'qf' } = Astro.props;
+const total = quoteSteps.length;
+const stepAttr = (i: number) => ({ 'data-step': quoteSteps[i].id, 'data-index': i });
+const fid = (name: string) => `${id}-${name}`;
+---
+
+<div class="qf" data-quote-form id={id}>
+  <form class="qf__form" novalidate aria-labelledby={fid('heading')}>
+    <h2 id={fid('heading')} class="visually-hidden">Property quote request</h2>
+
+    <!-- Progress -->
+    <div class="qf__progress">
+      <div class="qf__progress-meta">
+        <span class="qf__count">Step <span data-current>1</span> of {total}</span>
+        <span class="qf__step-name" data-step-name>{quoteSteps[0].title}</span>
+      </div>
+      <div
+        class="qf__bar"
+        role="progressbar"
+        aria-label="Quote request progress"
+        aria-valuemin="1"
+        aria-valuemax={total}
+        aria-valuenow="1"
+        aria-valuetext={`Step 1 of ${total}: ${quoteSteps[0].title}`}
+      >
+        <span class="qf__bar-fill"></span>
+      </div>
+      <ol class="qf__steps" role="list" aria-label="Steps">
+        {
+          quoteSteps.map((s, i) => (
+            <li>
+              <button type="button" class="qf__dot" data-goto={i} disabled={i > 0} aria-label={`Go to step ${i + 1}: ${s.title}`}>
+                <span>{i + 1}</span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="qf__viewport">
+      <!-- Hidden program context (set from ?program=) -->
+      <input type="hidden" name="program" value="" />
+      <!-- Honeypot: humans never see or fill this -->
+      <div class="qf__hp" aria-hidden="true">
+        <label for={fid('website')}>Leave this field empty</label>
+        <input id={fid('website')} name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <!-- 1. Property type -->
+      <fieldset class="qf__step" {...stepAttr(0)}>
+        <legend class="qf__q" tabindex="-1">{quoteSteps[0].question}</legend>
+        <div class="qf__choices qf__choices--cards">
+          {
+            propertyOptions.map((o) => (
+              <label class="choice">
+                <input type="radio" name="propertyType" value={o.value} required />
+                <span class="choice__box">
+                  {o.icon && <Icon name={o.icon} size={28} />}
+                  <span class="choice__label">{o.label}</span>
+                  <span class="choice__check"><Icon name="check" size={14} strokeWidth={2.4} /></span>
+                </span>
+              </label>
+            ))
+          }
+        </div>
+        <p class="qf__error" data-error-for="propertyType" hidden></p>
+      </fieldset>
+
+      <!-- 2. Services -->
+      <fieldset class="qf__step" {...stepAttr(1)} hidden>
+        <legend class="qf__q" tabindex="-1">{quoteSteps[1].question}</legend>
+        <p class="qf__hint">Select all that apply.</p>
+        <div class="qf__choices qf__choices--cards">
+          {
+            serviceOptions.map((o) => (
+              <label class="choice">
+                <input type="checkbox" name="services" value={o.value} />
+                <span class="choice__box">
+                  {o.icon && <Icon name={o.icon} size={28} />}
+                  <span class="choice__label">{o.label}</span>
+                  <span class="choice__check"><Icon name="check" size={14} strokeWidth={2.4} /></span>
+                </span>
+              </label>
+            ))
+          }
+        </div>
+        <div class="field" data-other-field hidden>
+          <label for={fid('servicesOther')}>What other service do you need?</label>
+          <input id={fid('servicesOther')} name="servicesOther" type="text" disabled aria-describedby={fid('servicesOther-err')} />
+          <p class="qf__error" id={fid('servicesOther-err')} data-error-for="servicesOther" hidden></p>
+        </div>
+        <p class="qf__error" data-error-for="services" hidden></p>
+      </fieldset>
+
+      <!-- 3. Property size -->
+      <fieldset class="qf__step" {...stepAttr(2)} hidden>
+        <legend class="qf__q" tabindex="-1">{quoteSteps[2].question}</legend>
+        <p class="qf__hint">Approximate numbers are fine. Only the address is required.</p>
+        <div class="qf__fields">
+          {
+            sizeFields.map((f) => (
+              <div
+                class:list={['field', { 'field--wide': f.name === 'address' }]}
+                data-show-for={f.showFor?.join(' ')}
+              >
+                <label for={fid(f.name)}>
+                  {f.label}
+                  {f.required ? <span class="req" aria-hidden="true">*</span> : <span class="opt">Optional</span>}
+                </label>
+                <input
+                  id={fid(f.name)}
+                  name={f.name}
+                  type={f.type}
+                  inputmode={f.inputmode}
+                  min={f.type === 'number' ? 0 : undefined}
+                  placeholder={f.placeholder}
+                  autocomplete={f.autocomplete ?? 'off'}
+                  required={f.required}
+                  aria-describedby={fid(`${f.name}-err`)}
+                />
+                <p class="qf__error" id={fid(`${f.name}-err`)} data-error-for={f.name} hidden></p>
+              </div>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <!-- 4. Frequency -->
+      <fieldset class="qf__step" {...stepAttr(3)} hidden>
+        <legend class="qf__q" tabindex="-1">{quoteSteps[3].question}</legend>
+        <div class="qf__choices qf__choices--list">
+          {
+            frequencyOptions.map((o) => (
+              <label class="choice choice--row">
+                <input type="radio" name="frequency" value={o.value} />
+                <span class="choice__box">
+                  <span class="choice__radio" />
+                  <span class="choice__label">{o.label}</span>
+                  {o.hint && <span class="choice__hint">{o.hint}</span>}
+                </span>
+              </label>
+            ))
+          }
+        </div>
+        <p class="qf__error" data-error-for="frequency" hidden></p>
+        <div class="field field--wide qf__notes">
+          <label for={fid('notes')}>Anything else we should know? <span class="opt">Optional</span></label>
+          <textarea id={fid('notes')} name="notes" rows="3" placeholder="Scope, timing, access notes, current challenges…"></textarea>
+        </div>
+      </fieldset>
+
+      <!-- 5. Photos -->
+      <fieldset class="qf__step" {...stepAttr(4)} hidden>
+        <legend class="qf__q" tabindex="-1">{quoteSteps[4].question}</legend>
+        <p class="qf__hint">
+          Optional. Photos help us understand the property. Up to {uploadLimits.maxFiles} images, {uploadLimits.maxFileMB}MB
+          each.
+        </p>
+        <div class="drop" data-drop>
+          <input
+            id={fid('photos')}
+            class="drop__input"
+            type="file"
+            accept={uploadLimits.accept.join(',')}
+            multiple
+            data-max-files={uploadLimits.maxFiles}
+            data-max-mb={uploadLimits.maxFileMB}
+            aria-describedby={fid('photos-err')}
+          />
+          <label for={fid('photos')} class="drop__zone">
+            <span class="drop__icon"><Icon name="upload" size={28} /></span>
+            <span class="drop__title">Drag photos here or <u>browse</u></span>
+            <span class="drop__sub">JPG, PNG, WebP, or HEIC</span>
+          </label>
+        </div>
+        <p class="qf__error" id={fid('photos-err')} data-error-for="photos" hidden></p>
+        <ul class="thumbs" role="list" data-thumbs aria-label="Selected photos"></ul>
+      </fieldset>
+
+      <!-- 6. Contact -->
+      <fieldset class="qf__step" {...stepAttr(5)} hidden>
+        <legend class="qf__q" tabindex="-1">{quoteSteps[5].question}</legend>
+        <div class="qf__fields">
+          <div class="field">
+            <label for={fid('name')}>Full name <span class="req" aria-hidden="true">*</span></label>
+            <input id={fid('name')} name="name" type="text" autocomplete="name" required aria-describedby={fid('name-err')} />
+            <p class="qf__error" id={fid('name-err')} data-error-for="name" hidden></p>
+          </div>
+          <div class="field">
+            <label for={fid('company')}>Company / management group <span class="opt">Optional</span></label>
+            <input id={fid('company')} name="company" type="text" autocomplete="organization" />
+          </div>
+          <div class="field">
+            <label for={fid('phone')}>Phone <span class="req" aria-hidden="true">*</span></label>
+            <input id={fid('phone')} name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby={fid('phone-err')} />
+            <p class="qf__error" id={fid('phone-err')} data-error-for="phone" hidden></p>
+          </div>
+          <div class="field">
+            <label for={fid('email')}>Email <span class="req" aria-hidden="true">*</span></label>
+            <input id={fid('email')} name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby={fid('email-err')} />
+            <p class="qf__error" id={fid('email-err')} data-error-for="email" hidden></p>
+          </div>
+          <fieldset class="field field--wide qf__segment">
+            <legend>Preferred contact method</legend>
+            <div class="segment">
+              {
+                contactMethodOptions.map((o, i) => (
+                  <label>
+                    <input type="radio" name="preferredContact" value={o.value} checked={i === 0} />
+                    <span>{o.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+        </div>
+      </fieldset>
+
+      <!-- 7. Review -->
+      <fieldset class="qf__step" {...stepAttr(6)} hidden>
+        <legend class="qf__q" tabindex="-1">{quoteSteps[6].question}</legend>
+        <p class="qf__hint">Check the details below, then submit.</p>
+        <dl class="review" data-review></dl>
+        <p class="qf__consent">
+          By submitting, you agree that One United Property Services may contact you about this request. See our <a
+            href="/privacy/">Privacy Policy</a
+          >.
+        </p>
+      </fieldset>
+    </div>
+
+    <p class="qf__status" role="alert" data-status hidden></p>
+
+    <div class="qf__nav">
+      <button type="button" class="btn btn--outline-dark qf__back" data-back disabled>
+        <Icon name="arrowLeft" size={18} /> Back
+      </button>
+      <button type="button" class="btn btn--dark qf__next" data-next>
+        <span data-next-label>Continue</span>
+        <Icon name="arrowRight" size={18} />
+      </button>
+      <button type="submit" class="btn qf__submit" data-submit hidden>
+        <span data-submit-label>Submit Request</span>
+        <Icon name="arrowRight" size={18} />
+      </button>
+    </div>
+  </form>
+
+  <!-- Confirmation -->
+  <div class="qf__done" data-done hidden tabindex="-1" aria-live="polite">
+    <svg class="qf__done-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="29" pathLength="1"></circle>
+      <path d="M19 33l9 9 17-19" pathLength="1"></path>
+    </svg>
+    <h3 class="qf__done-title" data-done-title>Request received</h3>
+    <p class="qf__done-text" data-done-text></p>
+    <div class="qf__done-preview" data-done-preview hidden>
+      <p>
+        <strong>Preview mode:</strong> this form isn’t connected to a delivery service yet, so your request was{' '}
+        <strong>not sent</strong>. Once an endpoint is configured (see <code>PUBLIC_QUOTE_ENDPOINT</code>), submissions
+        will be delivered automatically.
+      </p>
+    </div>
+    <button type="button" class="btn btn--outline-dark" data-restart>Start a new request</button>
+  </div>
+</div>
+
+<script>
+  import { initQuoteForms } from '@/scripts/quote-form';
+  initQuoteForms();
+</script>
+
+<style>
+  .qf {
+    position: relative;
+    background: var(--white);
+    color: var(--text);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.35);
+    padding: clamp(1.25rem, 4vw, 2.75rem);
+  }
+  .qf :focus-visible {
+    outline-color: var(--accent-ink);
+  }
+
+  /* Progress */
+  .qf__progress {
+    margin-bottom: 1.75rem;
+  }
+  .qf__progress-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .qf__count {
+    color: var(--text-muted);
+  }
+  .qf__step-name {
+    color: var(--accent-ink);
+  }
+  .qf__bar {
+    height: 4px;
+    border-radius: 4px;
+    background: var(--paper-2);
+    overflow: hidden;
+  }
+  .qf__bar-fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(var(--progress, 0.142));
+    transition: transform 700ms var(--ease-out);
+  }
+  .qf__steps {
+    display: none;
+  }
+  @media (min-width: 640px) {
+    .qf__steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.9rem;
+    }
+  }
+  .qf__dot {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition:
+      background var(--dur),
+      color var(--dur),
+      border-color var(--dur);
+  }
+  .qf__dot:not(:disabled):hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .qf__dot:disabled {
+    cursor: default;
+    opacity: 0.55;
+  }
+  .qf__dot:global(.is-done) {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--white);
+  }
+  .qf__dot:global(.is-current) {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--ink);
+    opacity: 1;
+  }
+
+  /* Steps */
+  .qf__viewport {
+    position: relative;
+  }
+  .qf__step {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .qf__step:global(.enter-fwd) {
+    animation: step-fwd 600ms var(--ease-out);
+  }
+  .qf__step:global(.enter-back) {
+    animation: step-back 600ms var(--ease-out);
+  }
+  @keyframes step-fwd {
+    from {
+      opacity: 0;
+      transform: translateX(28px);
+    }
+  }
+  @keyframes step-back {
+    from {
+      opacity: 0;
+      transform: translateX(-28px);
+    }
+  }
+  .qf__q {
+    display: block;
+    padding: 0;
+    margin-bottom: 0.4rem;
+    font-size: clamp(1.35rem, 1.1rem + 1.1vw, 1.9rem);
+    font-weight: 800;
+    font-stretch: 110%;
+    line-height: 1.15;
+    outline: none;
+  }
+  .qf__hint {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    margin-bottom: 1.25rem;
+  }
+  .qf__q + .qf__choices {
+    margin-top: 1.25rem;
+  }
+
+  /* Choice cards */
+  .qf__choices {
+    display: grid;
+    gap: 0.65rem;
+  }
+  .qf__choices--cards {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+  }
+  .qf__choices--list {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  }
+  .choice {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .choice__box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.25rem;
+    height: 100%;
+    min-height: 7.25rem;
+    padding: 1rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    transition:
+      border-color var(--dur-fast),
+      background var(--dur-fast),
+      transform var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+  }
+  .choice__box :global(.icon) {
+    color: var(--accent-ink);
+  }
+  .choice__label {
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .choice__check {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: grid;
+    place-items: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    color: transparent;
+    transition: all var(--dur-fast);
+  }
+  .choice__check :global(.icon) {
+    color: inherit;
+  }
+  .choice:hover .choice__box {
+    border-color: rgba(21, 24, 28, 0.4);
+  }
+  .choice:active .choice__box {
+    transform: scale(0.98);
+  }
+  .choice:has(input:focus-visible) .choice__box {
+    outline: 3px solid var(--accent-ink);
+    outline-offset: 2px;
+  }
+  .choice:has(input:checked) .choice__box {
+    border-color: var(--ink);
+    background: var(--white);
+    box-shadow: 0 10px 24px rgba(13, 15, 18, 0.1);
+  }
+  .choice:has(input:checked) .choice__check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ink);
+    animation: pop 400ms var(--ease-out);
+  }
+  @keyframes pop {
+    50% {
+      transform: scale(1.3);
+    }
+  }
+  .choice--row .choice__box {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 0;
+    gap: 0.25rem 0.75rem;
+    padding: 1rem 1.1rem;
+  }
+  .choice__radio {
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-muted);
+    flex: none;
+    transition: all var(--dur-fast);
+  }
+  .choice:has(input:checked) .choice__radio {
+    border: 5px solid var(--ink);
+  }
+  .choice__hint {
+    width: 100%;
+    padding-left: 1.9rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  /* Text fields */
+  .qf__fields {
+    display: grid;
+    gap: 1rem 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .qf__fields {
+      grid-template-columns: 1fr 1fr;
+    }
+    .field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+  }
+  .field[hidden] {
+    display: none;
+  }
+  .field label,
+  .field legend {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    font-size: 0.86rem;
+    font-weight: 700;
+    padding: 0;
+  }
+  .req {
+    color: var(--danger);
+  }
+  .opt {
+    font-weight: 500;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.8rem 0.95rem;
+    font-size: 1rem; /* ≥16px prevents iOS zoom */
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+    transition:
+      border-color var(--dur-fast),
+      background var(--dur-fast),
+      box-shadow var(--dur-fast);
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 6rem;
+  }
+  .field input:hover,
+  .field textarea:hover {
+    border-color: rgba(21, 24, 28, 0.35);
+  }
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--ink);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(216, 162, 62, 0.45);
+  }
+  .field input[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+  .qf__notes {
+    margin-top: 1.5rem;
+  }
+  [data-other-field] {
+    margin-top: 1rem;
+  }
+
+  .qf__error {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin-top: 0.4rem;
+    color: var(--danger);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .qf__error[hidden] {
+    display: none;
+  }
+
+  /* Segmented control */
+  .segment {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .segment label {
+    position: relative;
+    cursor: pointer;
+  }
+  .segment input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .segment span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.9rem;
+    padding: 0.55rem 1.1rem;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all var(--dur-fast);
+  }
+  .segment input:checked + span {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--white);
+  }
+  .segment input:focus-visible + span {
+    outline: 3px solid var(--accent-ink);
+    outline-offset: 2px;
+  }
+
+  /* Upload */
+  .drop {
+    position: relative;
+  }
+  .drop__input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  .drop__zone {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    padding: 2.5rem 1.25rem;
+    border: 2px dashed rgba(21, 24, 28, 0.25);
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    text-align: center;
+    transition:
+      border-color var(--dur-fast),
+      background var(--dur-fast);
+  }
+  .drop:hover .drop__zone,
+  .drop:global(.is-over) .drop__zone {
+    border-color: var(--accent-ink);
+    background: #fbf6ea;
+  }
+  .drop:has(.drop__input:focus-visible) .drop__zone {
+    outline: 3px solid var(--accent-ink);
+    outline-offset: 2px;
+  }
+  .drop__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--accent-ink);
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .drop:global(.is-over) .drop__icon {
+    transform: translateY(-4px) scale(1.08);
+  }
+  .drop__title {
+    font-weight: 700;
+  }
+  .drop__sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .thumbs:empty {
+    display: none;
+  }
+  .thumbs :global(li) {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--paper-2);
+    animation: thumb-in 500ms var(--ease-out);
+  }
+  @keyframes thumb-in {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+  .thumbs :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .thumbs :global(.thumb__name) {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.65rem;
+    color: var(--white);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .thumbs :global(.thumb__remove) {
+    position: absolute;
+    top: 0.3rem;
+    right: 0.3rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(13, 15, 18, 0.8);
+    color: var(--white);
+  }
+
+  /* Review */
+  .review {
+    display: grid;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .review :global(.review__row) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 1rem;
+    padding: 0.95rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .review :global(.review__row:last-child) {
+    border-bottom: 0;
+  }
+  .review :global(dt) {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .review :global(dd) {
+    grid-column: 1;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .review :global(.review__edit) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    padding: 0.5rem 0.75rem;
+    min-height: 2.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    border-radius: var(--radius);
+  }
+  .review :global(.review__edit:hover) {
+    background: var(--paper);
+  }
+  .qf__consent {
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  /* Status + nav */
+  .qf__status {
+    margin-top: 1.25rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    background: #fbeceb;
+    color: var(--danger);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .qf__nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .qf__back[disabled] {
+    visibility: hidden;
+  }
+  .qf__next,
+  .qf__submit {
+    margin-left: auto;
+  }
+  .qf__submit:global(.is-loading) {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+  .qf__submit:global(.is-loading) :global(.icon) {
+    animation: nudge 800ms ease-in-out infinite;
+  }
+  @keyframes nudge {
+    50% {
+      transform: translateX(6px);
+    }
+  }
+  @media (max-width: 480px) {
+    .qf__nav .btn {
+      padding-inline: 1rem;
+    }
+    .qf__next,
+    .qf__submit {
+      flex: 1;
+    }
+  }
+
+  .qf__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* Confirmation */
+  .qf__done {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    padding: clamp(1.5rem, 5vw, 3rem) 0.5rem;
+    text-align: center;
+    outline: none;
+  }
+  .qf__done[hidden] {
+    display: none;
+  }
+  .qf__done-mark {
+    width: 72px;
+    height: 72px;
+    fill: none;
+    stroke: var(--accent-ink);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .qf__done-mark circle,
+  .qf__done-mark path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 900ms var(--ease-out) forwards;
+  }
+  .qf__done-mark path {
+    animation-delay: 500ms;
+  }
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .qf__done-title {
+    font-size: var(--fs-2xl);
+    text-transform: uppercase;
+  }
+  .qf__done-text {
+    max-width: 46ch;
+    color: var(--text-muted);
+  }
+  .qf__done-preview {
+    max-width: 52ch;
+    padding: 1rem 1.15rem;
+    border: 1px dashed var(--accent-ink);
+    border-radius: var(--radius);
+    background: #fbf6ea;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+  .qf__done-preview code {
+    font-size: 0.85em;
+  }
+</style>

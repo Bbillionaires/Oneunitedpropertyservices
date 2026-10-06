@@ -1,0 +1,57 @@
+---
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import Intro from '@/components/Intro.astro';
+import ServicesShowcase from '@/components/ServicesShowcase.astro';
+import BeforeAfterSection from '@/components/BeforeAfterSection.astro';
+import PropertyTypes from '@/components/PropertyTypes.astro';
+import WhyOneUnited from '@/components/WhyOneUnited.astro';
+import Programs from '@/components/Programs.astro';
+import QuoteSection from '@/components/QuoteSection.astro';
+import ServiceArea from '@/components/ServiceArea.astro';
+import PortfolioCTA from '@/components/PortfolioCTA.astro';
+import heroSrc from '@/assets/placeholders/hero-community-pool.jpg';
+import { site } from '@/data/site';
+import { services } from '@/data/services';
+
+const hero = await getImage({ src: heroSrc, widths: [640, 960, 1280, 1920, 2400], format: 'webp', quality: 72 });
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Property services',
+    itemListElement: services.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Service',
+        name: s.title,
+        description: s.summary,
+        url: `${site.url}/services/${s.slug}/`,
+        provider: { '@id': `${site.url}/#organization` },
+        areaServed: 'Jacksonville and Northeast Florida',
+      },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={site.name}
+  description="Commercial and multifamily property maintenance in Jacksonville & Northeast Florida — lawn and grounds care, pressure washing, painting, apartment turnovers, and general maintenance from one team."
+  preloadImage={{ src: hero.src, srcset: hero.srcSet.attribute, sizes: '100vw', type: 'image/webp' }}
+  schema={schema}
+>
+  <Hero image={hero} imageAlt="Well-kept apartment community with a resort-style pool, manicured landscaping, and freshly painted buildings" />
+  <Intro />
+  <ServicesShowcase />
+  <BeforeAfterSection />
+  <PropertyTypes />
+  <WhyOneUnited />
+  <Programs />
+  <QuoteSection />
+  <ServiceArea />
+  <PortfolioCTA />
+</BaseLayout>

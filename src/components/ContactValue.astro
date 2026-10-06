@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+import type { ContactField } from '@/data/site';
+
+interface Props {
+  field: ContactField;
+  icon?: IconName;
+}
+const { field, icon } = Astro.props;
+---
+
+<span class="contact-value">
+  {icon && <Icon name={icon} size={18} />}
+  <span class="visually-hidden">{field.label}:</span>
+  {
+    field.placeholder ? (
+      <span class="placeholder-text">
+        {field.value} <span class="placeholder-tag">Placeholder</span>
+      </span>
+    ) : field.href ? (
+      <a href={field.href}>{field.value}</a>
+    ) : (
+      <span>{field.value}</span>
+    )
+  }
+</span>
+
+<style>
+  .contact-value {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .contact-value :global(.icon) {
+    flex: none;
+    margin-top: 0.2em;
+    color: var(--accent);
+  }
+  .contact-value :global(.placeholder-text) {
+    flex-wrap: wrap;
+  }
+</style>

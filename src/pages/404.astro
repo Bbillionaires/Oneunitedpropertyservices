@@ -1,0 +1,23 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+---
+
+<BaseLayout title="Page Not Found" description="The page you’re looking for could not be found." noindex>
+  <PageHero eyebrow="404" title={'This page has\n*moved on.*'} lead="The page you’re looking for doesn’t exist or may have been moved.">
+    <div class="nf-actions hero-stage" style="--d:700ms">
+      <a class="btn" href="/">Back to Home <Icon name="arrowRight" size={18} /></a>
+      <a class="btn btn--ghost" href="/quote/">Request a Quote <Icon name="arrowRight" size={18} /></a>
+    </div>
+  </PageHero>
+</BaseLayout>
+
+<style>
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 0.75rem;
+  }
+</style>

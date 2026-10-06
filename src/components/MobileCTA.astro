@@ -1,0 +1,36 @@
+---
+import Icon from './Icon.astro';
+import { quoteHref } from '@/data/navigation';
+---
+
+<div class="mobile-cta" inert>
+  <a class="btn btn--block" href={quoteHref}>
+    Request a Quote
+    <Icon name="arrowRight" size={18} />
+  </a>
+</div>
+
+<style>
+  .mobile-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(13, 15, 18, 0.92) 60%, rgba(13, 15, 18, 0));
+    transform: translateY(110%);
+    transition: transform 500ms var(--ease-out);
+  }
+  .mobile-cta:global(.is-visible) {
+    transform: none;
+  }
+  .mobile-cta .btn {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+  @media (min-width: 768px) {
+    .mobile-cta {
+      display: none;
+    }
+  }
+</style>

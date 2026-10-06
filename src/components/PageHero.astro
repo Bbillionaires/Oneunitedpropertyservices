@@ -1,0 +1,169 @@
+---
+/**
+ * Interior page hero: image background, breadcrumb, split-text H1.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import SplitText from './SplitText.astro';
+import { site } from '@/data/site';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  crumbs?: Crumb[];
+  compact?: boolean;
+}
+const { eyebrow, title, lead, image, imageAlt = '', crumbs = [], compact = false } = Astro.props;
+const trail: Crumb[] = [{ label: 'Home', href: '/' }, ...crumbs];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: trail.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: c.href ? new URL(c.href, site.url).href : new URL(Astro.url.pathname, site.url).href,
+  })),
+};
+---
+
+<section class:list={['phero', { 'phero--compact': compact, 'phero--image': image }]}>
+  {
+    image && (
+      <div class="phero__media">
+        <div class="phero__parallax" data-parallax="0.1">
+          <Image src={image} alt={imageAlt} widths={[768, 1280, 1920]} sizes="100vw" loading="eager" fetchpriority="high" />
+        </div>
+      </div>
+    )
+  }
+  <div class="phero__shade" aria-hidden="true"></div>
+  <div class="phero__lines" aria-hidden="true"></div>
+
+  <div class="container phero__inner">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="phero__crumbs hero-stage" style="--d:100ms">
+          <ol role="list">
+            {trail.map((c, i) => (
+              <li>
+                {c.href && i < trail.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    {eyebrow && <p class="eyebrow hero-stage" style="--d:200ms">{eyebrow}</p>}
+    <SplitText as="h1" text={title} class="phero__title h1" delay={150} />
+    {lead && <p class="lead phero__lead hero-stage" style="--d:600ms">{lead}</p>}
+    <slot />
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+<style>
+  .phero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(78svh, 720px);
+    padding: calc(var(--header-h) + 4rem) 0 clamp(3rem, 7vw, 5.5rem);
+    background: var(--ink);
+    color: var(--white);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .phero--compact {
+    min-height: 0;
+    padding-top: calc(var(--header-h) + clamp(3rem, 8vw, 6rem));
+  }
+  .phero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .phero__parallax {
+    position: absolute;
+    inset: -10% 0;
+  }
+  .phero__parallax :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  :global(.motion-ok) .phero__parallax :global(img) {
+    animation: phero-zoom 2.4s var(--ease-out) both;
+  }
+  @keyframes phero-zoom {
+    from {
+      transform: scale(1.14);
+    }
+  }
+  .phero__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(70% 90% at 90% 0%, rgba(216, 162, 62, 0.16), transparent 60%);
+  }
+  .phero--image .phero__shade {
+    background:
+      linear-gradient(90deg, rgba(13, 15, 18, 0.92), rgba(13, 15, 18, 0.55) 60%, rgba(13, 15, 18, 0.3)),
+      linear-gradient(0deg, rgba(13, 15, 18, 0.85), transparent 55%);
+  }
+  .phero__lines {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: calc(100% / 6) 100%;
+    mask-image: linear-gradient(to bottom, transparent, #000 40%, transparent);
+  }
+  .phero__inner {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .phero__title {
+    font-weight: 900;
+    font-stretch: 118%;
+    max-width: 18ch;
+  }
+  .phero__lead {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .phero__crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-on-dark-muted);
+  }
+  .phero__crumbs li + li::before {
+    content: '/';
+    margin-right: 0.4rem;
+    opacity: 0.5;
+  }
+  .phero__crumbs a {
+    text-decoration: none;
+  }
+  .phero__crumbs a:hover {
+    color: var(--white);
+  }
+  .phero__crumbs [aria-current] {
+    color: var(--white);
+  }
+
+</style>

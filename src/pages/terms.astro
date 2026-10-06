@@ -1,0 +1,42 @@
+---
+import LegalPage from '@/components/LegalPage.astro';
+import { site } from '@/data/site';
+---
+
+<LegalPage title="Terms" description={`Terms of use for the ${site.name} website.`}>
+  <p><strong>Last updated:</strong> [Date]</p>
+  <p>
+    These terms govern your use of {site.domain}, operated by {site.name}, {site.parentLine.toLowerCase()}. By using this
+    website, you agree to these terms.
+  </p>
+
+  <h2>Website content</h2>
+  <p>
+    Content on this website is provided for general information about our services. Service descriptions are not
+    offers; the scope, schedule, and pricing of any work are set out in a separate written proposal or agreement.
+  </p>
+
+  <h2>Quote requests</h2>
+  <p>
+    Submitting a quote request does not create a contract or obligate either party. We will follow up to discuss the
+    property and any proposed services.
+  </p>
+
+  <h2>Images</h2>
+  <p>
+    Some images on this website are representative stock photography or simulated examples and do not depict specific
+    projects completed by {site.name}, unless stated otherwise.
+  </p>
+
+  <h2>Intellectual property</h2>
+  <p>The {site.name} name, logo, and website content may not be used without permission.</p>
+
+  <h2>Limitation of liability</h2>
+  <p>[To be completed by counsel.]</p>
+
+  <h2>Governing law</h2>
+  <p>These terms are governed by the laws of the State of Florida. [Confirm with counsel.]</p>
+
+  <h2>Contact</h2>
+  <p>Questions about these terms can be sent to [contact email / mailing address].</p>
+</LegalPage>

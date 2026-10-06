@@ -1,0 +1,122 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import FloridaMap from './FloridaMap.astro';
+import Icon from './Icon.astro';
+import { serviceAreas } from '@/data/serviceAreas';
+import { quoteHref } from '@/data/navigation';
+
+interface Props {
+  headingAs?: 'h1' | 'h2';
+}
+const { headingAs = 'h2' } = Astro.props;
+---
+
+<section id="service-area" class="area section section--ink" aria-labelledby="area-title">
+  <div class="container area__grid">
+    <div class="area__copy">
+      <SectionHeading
+        id="area-title"
+        as={headingAs}
+        eyebrow="Service area"
+        title={'Serving Jacksonville &\n*Northeast Florida.*'}
+        lead="Our home market is Jacksonville and the surrounding Northeast Florida region. Managing a property nearby? Ask us about coverage for your location."
+      />
+
+      <ul class="area__list" role="list" data-reveal-group="100">
+        {
+          serviceAreas.map((a) => (
+            <li class="area__item" data-reveal>
+              <span class="area__pin">
+                <Icon name="pin" size={20} />
+              </span>
+              <div>
+                <h3>
+                  {a.name} <span class="area__region">· {a.region}</span>
+                </h3>
+                <p class="muted">{a.description}</p>
+              </div>
+              {a.status === 'primary' && <span class="area__badge">Home market</span>}
+            </li>
+          ))
+        }
+      </ul>
+
+      <a class="btn" href={quoteHref} data-reveal>Check service for my property <Icon name="arrowRight" size={18} /></a>
+    </div>
+
+    <div class="area__map" data-reveal-trigger>
+      <FloridaMap />
+    </div>
+  </div>
+</section>
+
+<style>
+  .area {
+    overflow: hidden;
+  }
+  .area__grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .area__list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 2.25rem 0;
+  }
+  .area__item {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    padding: 1.4rem;
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .area__item h3 {
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .area__region {
+    color: var(--text-on-dark-muted);
+    font-weight: 600;
+    font-size: 0.85em;
+  }
+  .area__item p {
+    font-size: var(--fs-sm);
+  }
+  .area__pin {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--ink);
+  }
+  .area__badge {
+    position: absolute;
+    top: -0.65rem;
+    right: 1rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--ink);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .area__map {
+    width: 100%;
+    max-width: 640px;
+    justify-self: center;
+  }
+  @media (min-width: 1024px) {
+    .area__grid {
+      grid-template-columns: 1fr 1.1fr;
+    }
+  }
+</style>

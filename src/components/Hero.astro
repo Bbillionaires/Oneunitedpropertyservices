@@ -1,0 +1,357 @@
+---
+import { Image } from 'astro:assets';
+import type { GetImageResult } from 'astro';
+import Icon from './Icon.astro';
+import { site } from '@/data/site';
+import { services } from '@/data/services';
+import { quoteHref } from '@/data/navigation';
+
+interface Props {
+  image: GetImageResult;
+  imageAlt: string;
+}
+const { image, imageAlt } = Astro.props;
+const reel = services.slice(0, 4);
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__media">
+    <div class="hero__parallax" data-parallax="0.12">
+      <img
+        class="hero__img"
+        src={image.src}
+        srcset={image.srcSet.attribute}
+        sizes="100vw"
+        alt={imageAlt}
+        width={image.attributes.width}
+        height={image.attributes.height}
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+    <div class="hero__shade"></div>
+    <div class="hero__grid" aria-hidden="true"></div>
+  </div>
+
+  <div class="container hero__content">
+    <p class="hero__parent hero-stage" style="--d:100ms">
+      <span class="hero__rule"></span>{site.parentLine}
+    </p>
+
+    <h1 id="hero-title" class="hero__title display">
+      <span class="hero__line"><span class="hero-stage-up" style="--d:250ms">One United</span></span>
+      <span class="hero__line hero__line--sub"><span class="hero-stage-up" style="--d:420ms">Property Services</span></span>
+    </h1>
+
+    <p class="hero__tagline hero-stage" style="--d:750ms">
+      One Property. <span>One Team.</span> <span class="accent">One United.</span>
+    </p>
+
+    <p class="hero__copy hero-stage" style="--d:900ms">
+      Complete property maintenance solutions for multifamily and commercial properties.
+    </p>
+
+    <div class="hero__actions hero-stage" style="--d:1050ms">
+      <a class="btn" href={quoteHref}>Request a Property Quote <Icon name="arrowRight" size={18} /></a>
+      <a class="btn btn--ghost" href="#services">Explore Our Services <Icon name="arrowRight" size={18} /></a>
+    </div>
+  </div>
+
+  <div class="container hero__bottom">
+    <ul class="hero__services hero-stage" style="--d:1250ms" role="list" aria-label="Core services">
+      {
+        services.map((s) => (
+          <li>
+            <Icon name={s.icon} size={18} />
+            {s.shortTitle}
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="hero__reel hero-stage" style="--d:1400ms" aria-hidden="true">
+      {
+        reel.map((s, i) => (
+          <figure class="hero__reel-item" style={`--n:${i}`}>
+            <Image src={s.image} alt="" widths={[240, 480]} sizes="240px" loading="lazy" />
+            <figcaption>{s.shortTitle}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <a class="hero__scroll hero-stage" style="--d:1500ms" href="#intro" aria-label="Scroll to content">
+      <span class="hero__scroll-track"><span></span></span>
+      Scroll
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: var(--white);
+    background: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero__parallax {
+    position: absolute;
+    inset: -8% 0;
+  }
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+    transform-origin: 60% 40%;
+  }
+  :global(.motion-ok) .hero__img {
+    animation: hero-drift 22s var(--ease-out) both;
+  }
+  @keyframes hero-drift {
+    from {
+      transform: scale(1.18) translate3d(-1.5%, 1%, 0);
+      filter: brightness(0.6);
+    }
+    to {
+      transform: scale(1.02);
+      filter: brightness(1);
+    }
+  }
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(13, 15, 18, 0.88) 0%, rgba(13, 15, 18, 0.55) 45%, rgba(13, 15, 18, 0.15) 100%),
+      linear-gradient(0deg, rgba(13, 15, 18, 0.95) 0%, rgba(13, 15, 18, 0) 45%);
+  }
+  .hero__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 96px 96px;
+    mask-image: radial-gradient(ellipse at 20% 60%, #000 0%, transparent 65%);
+  }
+  :global(.motion-ok) .hero__grid {
+    animation: grid-pan 40s linear infinite;
+  }
+  @keyframes grid-pan {
+    to {
+      background-position: 96px 96px;
+    }
+  }
+
+  .hero__content {
+    padding-top: calc(var(--header-h) + 4rem);
+  }
+  .hero__parent {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .hero__rule {
+    width: 2.5rem;
+    height: 2px;
+    background: currentColor;
+  }
+  .hero__title {
+    margin-top: 1.4rem;
+    font-weight: 900;
+    font-stretch: 118%;
+  }
+  .hero__line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+  .hero__line > span {
+    display: block;
+  }
+  .hero__line--sub {
+    font-size: 0.5em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.92);
+    margin-top: 0.15em;
+  }
+  .hero__tagline {
+    margin-top: 1.6rem;
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    font-stretch: 108%;
+    letter-spacing: 0.01em;
+  }
+  .hero__copy {
+    margin-top: 0.9rem;
+    max-width: 44ch;
+    font-size: var(--fs-lg);
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2.2rem;
+  }
+
+  .hero__bottom {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-top: 3rem;
+    padding-bottom: 2.25rem;
+  }
+  .hero__services {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: 46rem;
+  }
+  .hero__services li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    background: rgba(13, 15, 18, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .hero__services :global(.icon) {
+    color: var(--accent);
+  }
+
+  /* Rotating service reel — signals "complete property care" at a glance. */
+  .hero__reel {
+    display: none;
+    position: relative;
+    width: 220px;
+    aspect-ratio: 4 / 3;
+    flex: none;
+  }
+  .hero__reel-item {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+  }
+  .hero__reel-item:first-child {
+    opacity: 1;
+  }
+  :global(.motion-ok) .hero__reel-item {
+    opacity: 0;
+    animation: reel 16s infinite;
+    animation-delay: calc(var(--n) * 4s);
+  }
+  @keyframes reel {
+    0% { opacity: 0; transform: translateY(16px) scale(0.96); }
+    4%, 24% { opacity: 1; transform: none; }
+    29%, 100% { opacity: 0; transform: translateY(-12px) scale(1.02); }
+  }
+  .hero__reel-item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__reel-item figcaption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  }
+
+  .hero__scroll {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    writing-mode: vertical-rl;
+  }
+  .hero__scroll-track {
+    position: relative;
+    width: 2px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+  }
+  .hero__scroll-track span {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateY(-100%);
+  }
+  :global(.motion-ok) .hero__scroll-track span {
+    animation: scroll-cue 2.2s var(--ease-in-out) infinite 2s;
+  }
+  @keyframes scroll-cue {
+    0% { transform: translateY(-100%); }
+    50% { transform: translateY(0); }
+    100% { transform: translateY(100%); }
+  }
+
+  /* Load-in staging (CSS only so it starts before JS executes) */
+  :global(.motion-ok) .hero-stage-up {
+    animation: stage-up 1300ms var(--ease-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes stage-up {
+    from { transform: translate3d(0, 105%, 0); }
+  }
+
+  @media (min-width: 768px) {
+    .hero__scroll {
+      display: flex;
+    }
+  }
+  @media (min-width: 1100px) {
+    .hero__reel {
+      display: block;
+    }
+  }
+  @media (max-width: 520px) {
+    .hero__actions .btn {
+      width: 100%;
+    }
+    .hero__services li {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.72rem;
+    }
+  }
+</style>

@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ServiceRows from '@/components/ServiceRows.astro';
+import Programs from '@/components/Programs.astro';
+import PortfolioCTA from '@/components/PortfolioCTA.astro';
+import heroImg from '@/assets/placeholders/commercial-building.jpg';
+---
+
+<BaseLayout
+  title="Commercial Property Maintenance Services"
+  description="Lawn and grounds care, commercial pressure washing, painting, apartment turnovers, and general maintenance for multifamily and commercial properties in Jacksonville and Northeast Florida."
+>
+  <PageHero
+    eyebrow="Services"
+    title={'One team.\n*Multiple solutions.*'}
+    lead="Complete property maintenance for apartment communities, multifamily, and commercial properties — scheduled, coordinated, and delivered by one team."
+    image={heroImg}
+    imageAlt="Modern commercial building with landscaped frontage at dusk"
+    crumbs={[{ label: 'Services' }]}
+  />
+  <ServiceRows />
+  <Programs />
+  <PortfolioCTA />
+</BaseLayout>

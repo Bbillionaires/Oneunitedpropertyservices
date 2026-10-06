@@ -1,0 +1,293 @@
+---
+/**
+ * "Built for Properties That Need to Perform."
+ * Desktop: scroll-driven list with a sticky image stage that wipes between
+ * property types. Mobile: stacked image cards.
+ */
+import { Image } from 'astro:assets';
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import { propertyTypes } from '@/data/propertyTypes';
+
+interface Props {
+  headingAs?: 'h1' | 'h2';
+  showLink?: boolean;
+}
+const { headingAs = 'h2', showLink = true } = Astro.props;
+---
+
+<section id="property-types" class="ptypes section section--light" aria-labelledby="ptypes-title">
+  <div class="container">
+    <SectionHeading
+      id="ptypes-title"
+      as={headingAs}
+      eyebrow="Who we serve"
+      title={'Built for properties\nthat need to *perform.*'}
+      lead="Every property type has its own standard. We build service around how yours operates — residents, tenants, customers, and owners all notice."
+    />
+
+    <div class="ptypes__layout" data-ptypes>
+      <div class="ptypes__stage" aria-hidden="true">
+        {
+          propertyTypes.map((p, i) => (
+            <div class:list={['ptypes__frame', { 'is-active': i === 0 }]} data-frame={p.id}>
+              <Image src={p.image} alt="" widths={[768, 1080, 1440]} sizes="(min-width: 1024px) 55vw, 1px" loading="lazy" />
+            </div>
+          ))
+        }
+        <div class="ptypes__counter">
+          <span class="ptypes__current">01</span> / {String(propertyTypes.length).padStart(2, '0')}
+        </div>
+      </div>
+
+      <ol class="ptypes__list" role="list">
+        {
+          propertyTypes.map((p, i) => (
+            <li class:list={['ptype', { 'is-active': i === 0 }]} data-item={p.id} data-index={i}>
+              <div class="ptype__media">
+                <Image src={p.image} alt={p.imageAlt} widths={[480, 768, 1080]} sizes="(min-width: 1024px) 1px, 100vw" loading="lazy" />
+              </div>
+              <div class="ptype__text">
+                <span class="ptype__num">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="ptype__title">{p.title}</h3>
+                <p class="ptype__blurb">{p.blurb}</p>
+                <ul class="ptype__needs" role="list" aria-label={`Common needs for ${p.title}`}>
+                  {p.needs.map((n) => (
+                    <li>{n}</li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    {
+      showLink && (
+        <div class="ptypes__more" data-reveal>
+          <a class="btn btn--outline-dark" href="/property-types/">
+            Property types we serve <Icon name="arrowRight" size={18} />
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .ptypes__layout {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .ptypes__stage {
+    display: none;
+  }
+  .ptypes__list {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .ptype {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .ptype__media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .ptype__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ptype__text {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem;
+  }
+  .ptype__num {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--accent-ink);
+  }
+  .ptype__title {
+    font-size: var(--fs-xl);
+    text-transform: uppercase;
+  }
+  .ptype__blurb {
+    color: var(--text-muted);
+  }
+  .ptype__needs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .ptype__needs li {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .ptypes__more {
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .ptypes__layout {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: clamp(2.5rem, 5vw, 5rem);
+      align-items: start;
+    }
+    .ptypes__stage {
+      display: block;
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+      height: calc(100vh - var(--header-h) - 3rem);
+      max-height: 760px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--ink);
+    }
+    .ptypes__frame {
+      position: absolute;
+      inset: 0;
+      clip-path: inset(0 0 0 100%);
+      transition: clip-path 1000ms var(--ease-out);
+    }
+    .ptypes__frame :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.15);
+      transition: transform 1600ms var(--ease-out);
+    }
+    .ptypes__frame:global(.is-active) {
+      clip-path: inset(0 0 0 0);
+      z-index: 1;
+    }
+    .ptypes__frame:global(.is-active) :global(img) {
+      transform: scale(1);
+    }
+    .ptypes__frame:global(.was-active) {
+      clip-path: inset(0 0 0 0);
+      z-index: 0;
+    }
+    .ptypes__counter {
+      position: absolute;
+      z-index: 2;
+      left: 1.5rem;
+      bottom: 1.25rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(13, 15, 18, 0.7);
+      color: var(--white);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+    .ptypes__current {
+      color: var(--accent);
+    }
+
+    .ptypes__list {
+      gap: 0;
+      padding-block: 8vh 22vh;
+    }
+    .ptype {
+      background: none;
+      border-radius: 0;
+      border-top: 1px solid var(--line);
+      overflow: visible;
+    }
+    .ptype:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+    .ptype__media {
+      display: none;
+    }
+    .ptype__text {
+      padding: 2rem 0;
+      grid-template-columns: 3rem 1fr;
+      column-gap: 1rem;
+    }
+    .ptype__num {
+      padding-top: 0.45rem;
+    }
+    .ptype__title {
+      font-size: clamp(1.5rem, 2.4vw, 2.4rem);
+      color: rgba(21, 24, 28, 0.28);
+      transition: color 600ms var(--ease-out);
+    }
+    .ptype__blurb,
+    .ptype__needs {
+      grid-column: 2;
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition:
+        opacity 600ms var(--ease-out),
+        max-height 800ms var(--ease-out);
+    }
+    .ptype__needs {
+      display: flex;
+    }
+    .ptype:global(.is-active) .ptype__title {
+      color: var(--text);
+    }
+    .ptype:global(.is-active) .ptype__blurb,
+    .ptype:global(.is-active) .ptype__needs {
+      opacity: 1;
+      max-height: 12rem;
+    }
+  }
+  @media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+    .ptype__title {
+      color: var(--text);
+    }
+    .ptype__blurb,
+    .ptype__needs {
+      opacity: 1;
+      max-height: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ptypes]').forEach((root) => {
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-item]'));
+    const frames = new Map(
+      Array.from(root.querySelectorAll<HTMLElement>('[data-frame]')).map((f) => [f.dataset.frame!, f]),
+    );
+    const counter = root.querySelector<HTMLElement>('.ptypes__current');
+    let active = items[0];
+
+    const activate = (item: HTMLElement) => {
+      if (item === active) return;
+      const prevFrame = frames.get(active.dataset.item!);
+      frames.forEach((f) => f.classList.remove('was-active'));
+      prevFrame?.classList.replace('is-active', 'was-active');
+      active.classList.remove('is-active');
+      item.classList.add('is-active');
+      frames.get(item.dataset.item!)?.classList.add('is-active');
+      if (counter) counter.textContent = String(Number(item.dataset.index) + 1).padStart(2, '0');
+      active = item;
+    };
+
+    // The item crossing the middle band of the viewport becomes active.
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => e.isIntersecting && activate(e.target as HTMLElement));
+      },
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    items.forEach((item) => {
+      io.observe(item);
+      item.addEventListener('mouseenter', () => activate(item));
+    });
+  });
+</script>

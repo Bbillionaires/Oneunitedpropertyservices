@@ -1,0 +1,306 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { mainNav, quoteHref } from '@/data/navigation';
+import { site } from '@/data/site';
+
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${site.name} — home`}>
+      <Logo size="sm" />
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <ul role="list">
+        {
+          mainNav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="btn btn--sm header-cta" href={quoteHref}>
+      Request a Quote
+      <Icon name="arrowRight" size={16} />
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+      <span class="menu-toggle__bars" aria-hidden="true"><span></span><span></span></span>
+    </button>
+
+    <div id="mobile-menu" class="mobile-menu" inert>
+      <nav aria-label="Mobile">
+        <ul role="list" class="mobile-menu__list">
+          {
+            mainNav.map((item, i) => (
+              <li style={`--i:${i}`}>
+                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                  <span class="mobile-menu__num">0{i + 1}</span>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="mobile-menu__footer" style={`--i:${mainNav.length}`}>
+        <a class="btn btn--block" href={quoteHref}>
+          Request a Property Quote
+          <Icon name="arrowRight" size={18} />
+        </a>
+        <p class="mobile-menu__tag">{site.tagline}</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    color: var(--white);
+    transition:
+      transform 500ms var(--ease-out),
+      color var(--dur) var(--ease-out);
+  }
+  /* Background lives on a pseudo-element so the fixed mobile menu isn't
+     trapped by a backdrop-filter containing block. */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 15, 18, 0.82);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--line-dark);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+  .site-header::after {
+    /* Soft top shade keeps nav legible over bright hero imagery. */
+    content: '';
+    position: absolute;
+    inset: 0 0 -40px 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent);
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity var(--dur);
+  }
+  .site-header:global(.is-scrolled)::before,
+  .site-header:global(.menu-open)::before {
+    opacity: 1;
+  }
+  .site-header:global(.is-scrolled)::after {
+    opacity: 0;
+  }
+  .site-header:global(.is-hidden) {
+    transform: translateY(-100%);
+  }
+
+  .header-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: var(--header-h);
+    transition: height var(--dur) var(--ease-out);
+  }
+  .site-header:global(.is-scrolled) .header-inner {
+    height: 64px;
+  }
+  .brand {
+    position: relative;
+    z-index: 2;
+    text-decoration: none;
+    margin-right: auto;
+  }
+
+  .primary-nav {
+    display: none;
+  }
+  .primary-nav ul {
+    display: flex;
+    gap: clamp(0.9rem, 1.6vw, 1.8rem);
+  }
+  .primary-nav a {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    opacity: 0.86;
+    transition: opacity var(--dur-fast);
+  }
+  .primary-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.1rem;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .primary-nav a:hover,
+  .primary-nav a[aria-current='page'] {
+    opacity: 1;
+  }
+  .primary-nav a:hover::after,
+  .primary-nav a[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  .menu-toggle {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: var(--radius);
+  }
+  .menu-toggle__bars {
+    position: relative;
+    width: 22px;
+    height: 12px;
+  }
+  .menu-toggle__bars span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    transition:
+      transform 450ms var(--ease-out),
+      top 450ms var(--ease-out),
+      width 450ms var(--ease-out);
+  }
+  .menu-toggle__bars span:first-child {
+    top: 0;
+  }
+  .menu-toggle__bars span:last-child {
+    top: 10px;
+    width: 65%;
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bars span:first-child {
+    top: 5px;
+    transform: rotate(45deg);
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bars span:last-child {
+    top: 5px;
+    width: 100%;
+    transform: rotate(-45deg);
+  }
+
+  /* Mobile menu panel */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: calc(var(--header-h) + 2rem) var(--gutter) calc(2rem + env(safe-area-inset-bottom));
+    background: var(--ink);
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+    transition:
+      clip-path 700ms var(--ease-out),
+      visibility 0s linear 700ms;
+    overflow-y: auto;
+  }
+  .site-header:global(.menu-open) .mobile-menu {
+    clip-path: inset(0 0 0 0);
+    visibility: visible;
+    transition: clip-path 700ms var(--ease-out);
+  }
+  .mobile-menu__list li {
+    border-bottom: 1px solid var(--line-dark);
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 700ms var(--ease-out);
+  }
+  .site-header:global(.menu-open) .mobile-menu__list li,
+  .site-header:global(.menu-open) .mobile-menu__footer {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(150ms + var(--i) * 55ms);
+  }
+  .mobile-menu__list a {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    text-decoration: none;
+    line-height: 1.05;
+  }
+  .mobile-menu__list a[aria-current='page'] {
+    color: var(--accent);
+  }
+  .mobile-menu__num {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--text-on-dark-muted);
+  }
+  .mobile-menu__footer {
+    margin-top: 2rem;
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 700ms var(--ease-out);
+  }
+  .mobile-menu__tag {
+    margin-top: 1rem;
+    font-size: var(--fs-sm);
+    color: var(--text-on-dark-muted);
+    text-align: center;
+  }
+
+  @media (min-width: 1180px) {
+    .primary-nav {
+      display: block;
+    }
+    .header-cta {
+      display: inline-flex;
+    }
+    .menu-toggle,
+    .mobile-menu {
+      display: none;
+    }
+  }
+  @media (min-width: 640px) and (max-width: 1179px) {
+    .header-cta {
+      display: inline-flex;
+    }
+  }
+</style>

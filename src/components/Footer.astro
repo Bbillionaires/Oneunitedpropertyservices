@@ -1,0 +1,198 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import ContactValue from './ContactValue.astro';
+import { site } from '@/data/site';
+import { services } from '@/data/services';
+import { footerNav, legalNav, quoteHref } from '@/data/navigation';
+import { primaryArea } from '@/data/serviceAreas';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer" data-hide-mobile-cta>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <Logo size="lg" showParent />
+        <p class="footer-tagline">{site.tagline}</p>
+        <a class="btn" href={quoteHref}>Request a Quote <Icon name="arrowRight" size={18} /></a>
+      </div>
+
+      <div class="footer-cols">
+        <div>
+          <h2 class="footer-heading">Services</h2>
+          <ul role="list">
+            {services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.title}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <h2 class="footer-heading">Company</h2>
+          <ul role="list">
+            {footerNav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <h2 class="footer-heading">Contact</h2>
+          <ul role="list" class="footer-contact">
+            <li><ContactValue field={site.contact.phone} icon="phone" /></li>
+            <li><ContactValue field={site.contact.email} icon="mail" /></li>
+            <li><ContactValue field={site.contact.address} icon="pin" /></li>
+          </ul>
+          <h2 class="footer-heading footer-heading--spaced">Service Area</h2>
+          <p class="footer-area">{primaryArea.name} &amp; {primaryArea.region}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-wordmark" aria-hidden="true">
+      <span>One United</span>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {year} {site.name}. {site.parentLine}.</p>
+      <p class="footer-domain">{site.domain}</p>
+      <ul role="list" class="footer-legal">
+        {legalNav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li class="footer-social">
+          {
+            site.social.map((s) =>
+              s.placeholder ? (
+                <span class="placeholder-text" title="Social profile link not yet provided">
+                  {s.label} <span class="placeholder-tag">TBD</span>
+                </span>
+              ) : (
+                <a href={s.href} rel="noopener" target="_blank">
+                  {s.label}
+                </a>
+              ),
+            )
+          }
+        </li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    background: var(--ink);
+    color: var(--text-on-dark);
+    padding: clamp(4rem, 8vw, 7rem) 0 calc(2rem + env(safe-area-inset-bottom));
+    overflow: hidden;
+  }
+  .footer-top {
+    display: grid;
+    gap: 3rem;
+  }
+  .footer-brand {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    align-content: start;
+  }
+  .footer-tagline {
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    font-stretch: 110%;
+    max-width: 18ch;
+    line-height: 1.15;
+  }
+  .footer-cols {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  }
+  .footer-heading {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+    font-stretch: 100%;
+  }
+  .footer-heading--spaced {
+    margin-top: 2rem;
+  }
+  .footer-cols ul {
+    display: grid;
+    gap: 0.65rem;
+  }
+  .footer-cols a {
+    text-decoration: none;
+    color: var(--text-on-dark-muted);
+    transition: color var(--dur-fast);
+  }
+  .footer-cols a:hover {
+    color: var(--white);
+  }
+  .footer-contact {
+    color: var(--text-on-dark-muted);
+    font-size: var(--fs-sm);
+  }
+  .footer-area {
+    color: var(--text-on-dark-muted);
+  }
+
+  .footer-wordmark {
+    margin-top: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(3rem, 11.2vw, 11.5rem);
+    font-weight: 900;
+    font-stretch: 125%;
+    text-transform: uppercase;
+    line-height: 0.8;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.16);
+    user-select: none;
+  }
+
+  .footer-bottom {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line-dark);
+    font-size: var(--fs-sm);
+    color: var(--text-on-dark-muted);
+  }
+  .footer-domain {
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-on-dark);
+  }
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    align-items: center;
+  }
+  .footer-legal a {
+    text-decoration: none;
+  }
+  .footer-legal a:hover {
+    color: var(--white);
+    text-decoration: underline;
+  }
+  .footer-social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+
+  @media (min-width: 960px) {
+    .footer-top {
+      grid-template-columns: 1fr 1.6fr;
+    }
+    .footer-bottom {
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+    }
+  }
+  @media (max-width: 767px) {
+    .site-footer {
+      padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+    }
+  }
+</style>

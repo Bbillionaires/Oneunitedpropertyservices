@@ -1,0 +1,38 @@
+---
+import SplitText from './SplitText.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  align?: 'left' | 'center';
+  as?: 'h1' | 'h2';
+  size?: 'h1' | 'h2';
+  id?: string;
+  class?: string;
+}
+const { eyebrow, title, lead, align = 'left', as = 'h2', size = 'h1', id, class: className } = Astro.props;
+---
+
+<div class:list={['section-heading', `section-heading--${align}`, className]}>
+  {eyebrow && <p class="eyebrow" data-reveal="fade">{eyebrow}</p>}
+  <SplitText text={title} as={as} class={size} id={id} />
+  {lead && <p class="lead muted" data-reveal style="--reveal-delay:250">{lead}</p>}
+  <slot />
+</div>
+
+<style>
+  .section-heading {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 58rem;
+  }
+  .section-heading--center {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+  .section-heading--center .lead {
+    margin-inline: auto;
+  }
+</style>

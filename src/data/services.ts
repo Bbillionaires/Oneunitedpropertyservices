@@ -211,12 +211,12 @@ export const services: Service[] = [
     shortTitle: 'EV Charging',
     icon: 'ev',
     summary:
-      'Electric vehicle charging stations for apartment communities and commercial properties, with profit-sharing options that let the property earn from every charge.',
+      'Electric vehicle charging stations for apartment communities and commercial properties — installed by our licensed electrician partners, with profit-sharing options that let the property earn from every charge.',
     intro:
-      'Residents and tenants increasingly expect a place to charge. We help properties add EV charging stations, from planning the location to installation, with options that turn charging into a source of revenue rather than only an amenity cost.',
+      'Residents and tenants increasingly expect a place to charge. We help properties add EV charging stations, from planning the location to installation. One United manages the project, the installation is performed by our licensed electrician partners, and profit-sharing options turn charging into a source of revenue rather than only an amenity cost.',
     scope: [
       'Site assessment and charger placement planning',
-      'Charging station installation',
+      'Installation by licensed electrician partners',
       'Parking space layout and signage',
       'Profit-sharing options on charging revenue',
       'Owner-purchased station options',

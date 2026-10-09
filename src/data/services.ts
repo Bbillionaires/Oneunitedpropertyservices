@@ -68,16 +68,16 @@ export const services: Service[] = [
     shortTitle: 'Weed & Pest Spraying',
     icon: 'sprayer',
     summary:
-      'Weed control and pesticide spraying that keeps lawns, beds, and hardscapes clean and protects the landscaping a property invests in.',
+      'Weed control and pesticide spraying for lawns, beds, and hardscapes — scheduled and managed by One United, applied by our pest control partners.',
     intro:
-      'Weeds in the cracks and pests in the turf undo good grounds work fast. Scheduled spraying keeps beds, lawns, walkways, and common areas clean between visits.',
+      'Weeds in the cracks and pests in the turf undo good grounds work fast. We schedule and coordinate spraying alongside your grounds maintenance, and the applications are performed by our pest control partners — so you still have one point of contact.',
     scope: [
       'Weed control in lawns and beds',
       'Sidewalk, curb, and hardscape weed spraying',
       'Fence line and common area treatment',
       'Lawn pest treatment',
       'Recurring spray schedules',
-      'Pairing with mowing and bed maintenance',
+      'Coordinated with mowing and bed maintenance',
     ],
     idealFor: ['Apartment communities', 'HOA common areas', 'Retail centers', 'Office parks'],
     seoTitle: 'Commercial Weed Control & Pesticide Spraying',

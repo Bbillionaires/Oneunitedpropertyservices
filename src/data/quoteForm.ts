@@ -16,7 +16,9 @@ export interface ChoiceOption {
 export const propertyOptions: ChoiceOption[] = [
   { value: 'apartment', label: 'Apartment Community', icon: 'building' },
   { value: 'multifamily', label: 'Multifamily', icon: 'townhome' },
+  { value: 'residential', label: 'Residential', icon: 'home' },
   { value: 'commercial', label: 'Commercial', icon: 'office' },
+  { value: 'gas-station', label: 'Gas Station', icon: 'fuel' },
   { value: 'retail', label: 'Retail', icon: 'store' },
   { value: 'office', label: 'Office', icon: 'briefcase' },
   { value: 'hoa', label: 'HOA / Community', icon: 'community' },
@@ -62,7 +64,7 @@ export const sizeFields: SizeField[] = [
     type: 'number',
     inputmode: 'numeric',
     placeholder: 'e.g. 240',
-    showFor: ['apartment', 'multifamily', 'hoa', 'other'],
+    showFor: ['apartment', 'multifamily', 'residential', 'hoa', 'other'],
   },
   {
     name: 'buildings',
@@ -77,7 +79,7 @@ export const sizeFields: SizeField[] = [
     type: 'number',
     inputmode: 'numeric',
     placeholder: 'e.g. 45000',
-    showFor: ['commercial', 'retail', 'office', 'other'],
+    showFor: ['commercial', 'gas-station', 'retail', 'office', 'other'],
   },
   {
     name: 'propertyCount',

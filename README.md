@@ -39,7 +39,7 @@ Content lives in `src/data/`, separate from components:
 | `site.ts` | Business name, tagline, phone/email/address/hours, social links |
 | `services.ts` | Services: copy, scope, images, SEO. **Add a service by adding an object**: it shows up on the homepage, the services page, the footer, the quote form, and gets its own page |
 | `propertyTypes.ts` | Property types section |
-| `beforeAfter.ts` | Before/after comparisons |
+| `gallery.ts` | Before & after photos (after photos first). Only add an after photo once the grass is cut and the pavement or fence is pressure washed |
 | `serviceAreas.ts` | Service markets and map markers. **Add a Florida market** by adding an entry (an example is commented in the file) |
 | `programs.ts` | Service programs and the “Why One United” points |
 | `quoteForm.ts` | Quote form options, conditional size fields, and upload limits |
@@ -53,7 +53,7 @@ Nothing below was invented. Every missing fact is shown on the site with a visib
 - **Social profiles:** `site.social` in `src/data/site.ts`.
 - **Company story:** the placeholder block on `/about/` (`src/pages/about.astro`).
 - **Photography:** the site uses **real One United photos only** (`src/assets/projects/`). There is no stock photography. Services and property types without a real photo are listed with an icon instead. To add a photo to a service, import it in `src/data/services.ts` and set `image` / `imageAlt`.
-- **Before/after projects:** each comparison shows a public `project` label (`src/data/beforeAfter.ts`). It currently reads "Townhome community · Jacksonville, FL". Name the property there only with the client's permission. Comparisons whose photos don't frame the exact same view set `sameView: false` and render as a side-by-side pair instead of a drag slider. Project photos were cropped to remove camera date stamps, and their EXIF/GPS metadata was stripped.
+- **Before & after gallery:** `src/data/gallery.ts`. After photos lead and are larger; before photos follow, smaller and muted. There are no per-photo titles. Blur house numbers and license plates before adding photos. The caption stays generic until the client approves naming the property.
 - **Legal pages:** fill in the bracketed items and have counsel review them.
 - **Scope lists** in `services.ts`: confirm each item matches what the company actually offers.
 

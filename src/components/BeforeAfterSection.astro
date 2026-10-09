@@ -1,80 +1,72 @@
 ---
 /**
- * "See the Difference" — tabbed before/after comparisons from real projects.
- * Uses the WAI-ARIA tabs pattern; each panel contains a ComparisonView.
+ * "See the Difference" — real job photos. After photos lead and are larger;
+ * before photos follow, smaller and muted. Data: src/data/gallery.ts.
  */
-import ComparisonView from './ComparisonView.astro';
+import { Image } from 'astro:assets';
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
-import { comparisons } from '@/data/beforeAfter';
+import { afterPhotos, beforePhotos, galleryCaption } from '@/data/gallery';
 
 interface Props {
   showLink?: boolean;
   headingAs?: 'h1' | 'h2';
 }
 const { showLink = true, headingAs = 'h2' } = Astro.props;
-const uid = 'ba';
 ---
 
 <section id="before-after" class="see section section--dark" aria-labelledby="see-title">
   <div class="see__glow" aria-hidden="true"></div>
   <div class="container">
-    <div class="see__head">
-      <SectionHeading
-        id="see-title"
-        as={headingAs}
-        eyebrow="Before & After"
-        title={'See the *Difference.*'}
-        lead="Real results from our work in Jacksonville. Drag a slider to compare."
-      />
-    </div>
+    <SectionHeading
+      id="see-title"
+      as={headingAs}
+      eyebrow="Before & After"
+      title={'See the *Difference.*'}
+      lead="Real results from our work in Jacksonville — cut, edged, and pressure washed."
+    />
 
-    <div class="see__tabs" data-tabs data-reveal>
-      <div class="see__tablist" role="tablist" aria-label="Before and after categories">
+    <div class="see__group">
+      <h3 class="see__label see__label--after"><span>After</span></h3>
+      <ul class="after-grid" role="list" data-reveal-group="90">
         {
-          comparisons.map((c, i) => (
-            <button
-              type="button"
-              role="tab"
-              id={`${uid}-tab-${c.id}`}
-              aria-controls={`${uid}-panel-${c.id}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              tabindex={i === 0 ? 0 : -1}
-            >
-              {c.title}
-            </button>
+          afterPhotos.map((p, i) => (
+            <li class:list={['after-grid__item', { 'after-grid__item--lead': i === 0 }]} data-reveal="scale">
+              <Image
+                src={p.image}
+                alt={`After: ${p.alt}`}
+                widths={i === 0 ? [640, 960, 1400] : [480, 720]}
+                sizes={i === 0 ? '(min-width: 960px) 50vw, 100vw' : '(min-width: 960px) 25vw, 50vw'}
+                loading="lazy"
+              />
+              <span class="tag tag--after" aria-hidden="true">After</span>
+            </li>
           ))
         }
-        <span class="see__indicator" aria-hidden="true"></span>
-      </div>
-
-      {
-        comparisons.map((c, i) => (
-          <div
-            class="see__panel"
-            role="tabpanel"
-            id={`${uid}-panel-${c.id}`}
-            aria-labelledby={`${uid}-tab-${c.id}`}
-            hidden={i !== 0}
-            tabindex="-1"
-          >
-            <ComparisonView comparison={c} />
-            <div class="see__caption">
-              <span class="see__cat">{c.category}</span>
-              <h3>{c.title}</h3>
-              <p class="muted">{c.caption}</p>
-              <p class="see__project">{c.project}</p>
-            </div>
-          </div>
-        ))
-      }
+      </ul>
     </div>
+
+    <div class="see__group see__group--before">
+      <h3 class="see__label see__label--before"><span>Before</span></h3>
+      <ul class="before-grid" role="list" data-reveal-group="60">
+        {
+          beforePhotos.map((p) => (
+            <li class="before-grid__item" data-reveal>
+              <Image src={p.image} alt={`Before: ${p.alt}`} widths={[320, 480]} sizes="(min-width: 960px) 16vw, 33vw" loading="lazy" />
+              <span class="tag tag--before" aria-hidden="true">Before</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="see__caption">{galleryCaption}</p>
 
     {
       showLink && (
         <div class="see__more" data-reveal>
-          <a class="link-arrow" href="/before-after/">
-            View all comparisons <Icon name="arrowRight" size={18} />
+          <a class="btn" href="/quote/">
+            Get this for your property <Icon name="arrowRight" size={18} />
           </a>
         </div>
       )
@@ -105,144 +97,135 @@ const uid = 'ba';
       transform: translate(-18vw, 20vw);
     }
   }
-  .see__head {
-    margin-bottom: clamp(2rem, 4vw, 3rem);
+  .see__group {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
   }
-  .see__tablist {
-    position: relative;
+  .see__label {
     display: flex;
-    gap: 0.25rem;
-    margin-bottom: 1.5rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    border-bottom: 1px solid var(--line-dark);
-  }
-  .see__tablist::-webkit-scrollbar {
-    display: none;
-  }
-  .see__tablist button {
-    flex: none;
-    padding: 1rem 1.1rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-on-dark-muted);
-    transition: color var(--dur-fast);
-    min-height: 48px;
-  }
-  .see__tablist button:hover,
-  .see__tablist button[aria-selected='true'] {
-    color: var(--white);
-  }
-  .see__indicator {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    height: 2px;
-    width: var(--w, 0);
-    background: var(--accent);
-    transform: translateX(var(--x, 0));
-    transition:
-      transform 500ms var(--ease-out),
-      width 500ms var(--ease-out);
-  }
-  .see__panel:not([hidden]) {
-    animation: panel-in 700ms var(--ease-out);
-  }
-  .see__panel:focus {
-    outline: none;
-  }
-  @keyframes panel-in {
-    from {
-      opacity: 0;
-      transform: translateY(14px);
-    }
-  }
-  .see__panel {
-    display: grid;
-    gap: 1.5rem;
     align-items: center;
-  }
-  .see__caption {
-    display: grid;
-    gap: 0.75rem;
-    align-content: center;
-  }
-  .see__cat {
-    font-size: var(--fs-xs);
-    font-weight: 700;
-    letter-spacing: 0.2em;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
     text-transform: uppercase;
+    font-stretch: 112%;
+  }
+  .see__label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line-dark);
+  }
+  .see__label--after {
+    font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.6rem);
     color: var(--accent);
   }
-  .see__caption h3 {
-    font-size: var(--fs-2xl);
+  .see__label--before {
+    font-size: 1rem;
+    letter-spacing: 0.16em;
+    color: var(--text-on-dark-muted);
+  }
+
+  /* After: big, bright, first */
+  .after-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .after-grid__item {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--charcoal-2);
+    box-shadow: 0 0 0 2px rgba(216, 162, 62, 0.55);
+  }
+  .after-grid__item--lead {
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 3;
+  }
+  .after-grid__item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1200ms var(--ease-out);
+  }
+  .after-grid__item:hover :global(img) {
+    transform: scale(1.05);
+  }
+  @media (min-width: 960px) {
+    .after-grid {
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-auto-rows: 1fr;
+    }
+    .after-grid__item {
+      aspect-ratio: auto;
+      min-height: 15rem;
+    }
+    .after-grid__item--lead {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      aspect-ratio: auto;
+    }
+  }
+
+  /* Before: smaller, muted */
+  .before-grid {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (min-width: 960px) {
+    .before-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+  .before-grid__item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .before-grid__item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.55) brightness(0.8);
+    transition: filter 500ms var(--ease-out);
+  }
+  .before-grid__item:hover :global(img) {
+    filter: none;
+  }
+
+  .tag {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
-  .see__caption .muted {
-    font-size: var(--fs-lg);
-    max-width: 38ch;
+  .tag--after {
+    background: var(--accent);
+    color: var(--ink);
+    font-size: 0.78rem;
+    padding: 0.45rem 0.9rem;
   }
-  .see__project {
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--line-dark);
+  .tag--before {
+    top: 0.45rem;
+    left: 0.45rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.58rem;
+    background: rgba(13, 15, 18, 0.75);
+    color: var(--white);
+  }
+  .see__caption {
+    margin-top: 1.25rem;
     font-size: var(--fs-sm);
     color: var(--text-on-dark-muted);
   }
-  .see__panel :global(.ba) {
-    width: 100%;
-    max-width: 640px;
-  }
-  @media (min-width: 960px) {
-    .see__panel:not([hidden]) {
-      grid-template-columns: minmax(0, 640px) 1fr;
-      gap: clamp(2rem, 5vw, 4.5rem);
-    }
-  }
   .see__more {
-    margin-top: 2.5rem;
-    color: var(--accent);
+    margin-top: 2.25rem;
   }
 </style>
-
-<script>
-  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
-    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
-    const indicator = root.querySelector<HTMLElement>('.see__indicator');
-    const list = root.querySelector<HTMLElement>('[role="tablist"]');
-
-    const moveIndicator = (tab: HTMLElement) => {
-      if (!indicator) return;
-      indicator.style.setProperty('--x', `${tab.offsetLeft}px`);
-      indicator.style.setProperty('--w', `${tab.offsetWidth}px`);
-    };
-
-    const select = (tab: HTMLButtonElement, focus = true) => {
-      tabs.forEach((t) => {
-        const on = t === tab;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
-        if (panel) panel.hidden = !on;
-      });
-      if (focus) tab.focus();
-      moveIndicator(tab);
-      tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    };
-
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => select(tab));
-      tab.addEventListener('keydown', (e) => {
-        const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
-        if (!(e.key in map)) return;
-        e.preventDefault();
-        select(tabs[(map[e.key] + tabs.length) % tabs.length]);
-      });
-    });
-
-    const current = () => tabs.find((t) => t.getAttribute('aria-selected') === 'true') ?? tabs[0];
-    moveIndicator(current());
-    new ResizeObserver(() => moveIndicator(current())).observe(list ?? root);
-  });
-</script>

@@ -30,6 +30,15 @@ export const propertyTypes: PropertyType[] = [
     needs: ['Exterior painting', 'Pressure washing', 'Make-ready', 'Routine maintenance'],
   },
   {
+    id: 'residential',
+    icon: 'home',
+    quoteValue: 'residential',
+    title: 'Residential Properties',
+    blurb:
+      'Homes and rental houses get the same commercial standard — cut, cleaned, and cared for on a schedule that fits.',
+    needs: ['Lawn care', 'Driveway & walkway washing', 'Home cleaning & steaming', 'Weed control'],
+  },
+  {
     id: 'commercial-buildings',
     icon: 'office',
     quoteValue: 'commercial',
@@ -37,6 +46,15 @@ export const propertyTypes: PropertyType[] = [
     blurb:
       'A building that looks maintained tells tenants and visitors the business inside is, too.',
     needs: ['Building washing', 'Exterior painting', 'Grounds care', 'General maintenance'],
+  },
+  {
+    id: 'gas-stations',
+    icon: 'fuel',
+    quoteValue: 'gas-station',
+    title: 'Gas Stations',
+    blurb:
+      'Pumps, canopies, and concrete take a beating every day. A clean lot and tidy landscaping keep customers pulling in.',
+    needs: ['Pump island & canopy washing', 'Concrete & lot pressure washing', 'Landscape strips & weed control', 'EV charging stations'],
   },
   {
     id: 'retail',

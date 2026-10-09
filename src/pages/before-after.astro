@@ -1,112 +1,21 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
-import ComparisonView from '@/components/ComparisonView.astro';
+import BeforeAfterSection from '@/components/BeforeAfterSection.astro';
 import CtaBand from '@/components/CtaBand.astro';
-import Icon from '@/components/Icon.astro';
-import { comparisons } from '@/data/beforeAfter';
-
-const hasPlaceholders = comparisons.some((c) => c.placeholder);
 ---
 
 <BaseLayout
   title="Before & After"
-  description="See the difference professional pressure washing, painting, landscaping, cleanup, and turnover services make on multifamily and commercial properties."
+  description="Real before and after photos from One United jobs in Jacksonville — lawns cut and edged, driveways, walkways, and fences pressure washed."
 >
   <PageHero
     eyebrow="Before & after"
     title={'See the *difference.*'}
-    lead="Real results from One United jobs in Jacksonville. Drag a slider to compare."
+    lead="Real One United jobs in Jacksonville. Finished work first."
     crumbs={[{ label: 'Before & After' }]}
     compact
   />
-
-  <section class="section section--dark gallery">
-    <div class="container">
-      {
-        hasPlaceholders && (
-          <p class="gallery__note" data-reveal>
-            <Icon name="info" size={18} />
-            <span>
-              Some comparisons below are <strong>illustrative images</strong>, not One United projects, and are
-              labeled on the image.
-            </span>
-          </p>
-        )
-      }
-      <ul class="gallery__grid" role="list">
-        {
-          comparisons.map((c) => (
-            <li class="gallery__item" data-reveal>
-              <ComparisonView comparison={c} sizes="(min-width: 1100px) 33vw, (min-width: 720px) 50vw, 100vw" />
-              <div class="gallery__caption">
-                <span class="gallery__cat">{c.category}</span>
-                <h2>{c.title}</h2>
-                <p class="muted">{c.caption}</p>
-                <p class="gallery__project">{c.project}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
+  <BeforeAfterSection showLink={false} />
   <CtaBand />
 </BaseLayout>
-
-<style>
-  .gallery {
-    padding-top: clamp(2.5rem, 5vw, 4rem);
-  }
-  .gallery__note {
-    display: flex;
-    gap: 0.75rem;
-    align-items: flex-start;
-    max-width: 70ch;
-    margin-bottom: 2.5rem;
-    padding: 1rem 1.25rem;
-    border: 1px dashed rgba(216, 162, 62, 0.6);
-    border-radius: var(--radius);
-    color: var(--text-on-dark-muted);
-    font-size: var(--fs-sm);
-  }
-  .gallery__note :global(.icon) {
-    flex: none;
-    color: var(--accent);
-    margin-top: 0.1rem;
-  }
-  .gallery__grid {
-    display: grid;
-    gap: clamp(2.5rem, 5vw, 4rem) 2rem;
-  }
-  .gallery__caption {
-    display: grid;
-    gap: 0.35rem;
-    margin-top: 1.1rem;
-  }
-  .gallery__cat {
-    font-size: var(--fs-xs);
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .gallery__caption h2 {
-    font-size: var(--fs-xl);
-  }
-  .gallery__project {
-    font-size: var(--fs-sm);
-    color: var(--text-on-dark-muted);
-  }
-  @media (min-width: 720px) {
-    .gallery__grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  @media (min-width: 1100px) {
-    .gallery__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-</style>

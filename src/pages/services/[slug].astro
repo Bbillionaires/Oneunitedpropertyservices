@@ -4,10 +4,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
 import Icon from '@/components/Icon.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import ComparisonView from '@/components/ComparisonView.astro';
+import { Image } from 'astro:assets';
 import CtaBand from '@/components/CtaBand.astro';
 import { services, type Service } from '@/data/services';
-import { comparisons } from '@/data/beforeAfter';
+import { afterPhotos } from '@/data/gallery';
 import { site } from '@/data/site';
 import { primaryArea } from '@/data/serviceAreas';
 import { quoteHref } from '@/data/navigation';
@@ -20,12 +20,8 @@ interface Props {
 const { service } = Astro.props;
 const others = services.filter((s) => s.slug !== service.slug);
 
-// Show a relevant comparison when one exists for this service.
-const comparisonFor: Record<string, string> = {
-  'lawn-grounds-care': 'Lawn & Grounds',
-  'pressure-washing': 'Pressure Washing',
-};
-const comparison = comparisons.find((c) => c.category === comparisonFor[service.slug]);
+// Finished-job photos for this service (see src/data/gallery.ts).
+const results = afterPhotos.filter((p) => p.services.includes(service.slug)).slice(0, 3);
 const quoteLink = `${quoteHref}?service=${service.quoteValue}`;
 
 const schema = [
@@ -87,14 +83,21 @@ const schema = [
   </section>
 
   {
-    comparison && (
+    results.length > 0 && (
       <section class="section section--dark">
         <div class="container">
-          <SectionHeading eyebrow="See the difference" title={comparison.title} size="h2" />
-          <div class="sv-ba" data-reveal>
-            <ComparisonView comparison={comparison} />
-            <p class="sv-ba__project">{comparison.project}</p>
-          </div>
+          <SectionHeading eyebrow="Finished work" title={'Real results,\n*real properties.*'} size="h2" />
+          <ul class="sv-results" role="list" data-reveal-group="90">
+            {results.map((r) => (
+              <li data-reveal="scale">
+                <Image src={r.image} alt={`After: ${r.alt}`} widths={[480, 720, 960]} sizes="(min-width: 960px) 33vw, 100vw" loading="lazy" />
+                <span class="sv-results__tag" aria-hidden="true">After</span>
+              </li>
+            ))}
+          </ul>
+          <a class="link-arrow sv-results__more" href="/before-after/">
+            See before &amp; after <Icon name="arrowRight" size={16} />
+          </a>
         </div>
       </section>
     )
@@ -184,14 +187,40 @@ const schema = [
     font-size: var(--fs-sm);
     color: var(--text-muted);
   }
-  .sv-ba {
+  .sv-results {
+    display: grid;
+    gap: 0.75rem;
     margin-top: 2.5rem;
-    max-width: 720px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   }
-  .sv-ba__project {
-    margin-top: 1rem;
-    font-size: var(--fs-sm);
-    color: var(--text-on-dark-muted);
+  .sv-results li {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 0 0 2px rgba(216, 162, 62, 0.55);
+  }
+  .sv-results :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .sv-results__tag {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--ink);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .sv-results__more {
+    margin-top: 1.75rem;
+    color: var(--accent);
   }
   .sv-others {
     display: grid;

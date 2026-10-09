@@ -5,8 +5,6 @@ import curbBefore from '@/assets/projects/duval-landing/curb-corner-before.jpg';
 import curbAfter from '@/assets/projects/duval-landing/curb-corner-after.jpg';
 import utilityBefore from '@/assets/projects/duval-landing/utility-frontage-before.jpg';
 import utilityAfter from '@/assets/projects/duval-landing/utility-frontage-after.jpg';
-import islandBefore from '@/assets/projects/duval-landing/driveway-island-before.jpg';
-import islandAfter from '@/assets/projects/duval-landing/driveway-island-after.jpg';
 import frontBefore from '@/assets/projects/duval-landing/townhome-front-before.jpg';
 import frontAfter from '@/assets/projects/duval-landing/townhome-front-after.jpg';
 import fenceBefore from '@/assets/projects/duval-landing/fence-line-before.jpg';
@@ -44,18 +42,6 @@ export interface Comparison {
 const PROJECT = 'Townhome community · Jacksonville, FL · Initial grounds cleanup, July 2026';
 
 export const comparisons: Comparison[] = [
-  {
-    id: 'driveway-island',
-    category: 'Lawn & Grounds',
-    title: 'Driveway islands',
-    caption: 'Overgrown turf islands between driveways cut back, edged, and brought down to a uniform height.',
-    project: PROJECT,
-    before: islandBefore,
-    after: islandAfter,
-    beforeAlt: 'Overgrown grass island between two townhome driveways with weeds along the concrete',
-    afterAlt: 'Same driveway island mowed short and cleanly edged',
-    placeholder: false,
-  },
   {
     id: 'sign-corner',
     category: 'Lawn & Grounds',

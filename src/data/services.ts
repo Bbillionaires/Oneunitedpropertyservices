@@ -211,7 +211,7 @@ export const services: Service[] = [
     shortTitle: 'EV Charging',
     icon: 'ev',
     summary:
-      'Electric vehicle charging stations for apartment communities and commercial properties — installed by our licensed electrician partners, with a profit-share option built on a split-cost structure.',
+      'Electric vehicle charging stations for apartment communities and commercial properties — installed by our licensed electrician partners, with two ways to own them: owner-purchased stations or a profit share built on a split-cost structure.',
     intro:
       'Residents and tenants increasingly expect a place to charge. We help properties add EV charging stations, from planning the location to installation. One United manages the project, the installation is performed by our licensed electrician partners, and our profit-share option uses a split-cost structure — the cost of the stations is shared, and so is the charging revenue — turning charging into a source of income rather than only an amenity cost.',
     scope: [
@@ -219,7 +219,7 @@ export const services: Service[] = [
       'Installation by licensed electrician partners',
       'Parking space layout and signage',
       'Profit share: split-cost structure with shared charging revenue',
-      'Owner-purchased station options',
+      'Owner-purchased stations',
       'Ongoing upkeep alongside your other property services',
     ],
     idealFor: ['Apartment communities', 'Office properties', 'Retail centers', 'HOA common parking'],

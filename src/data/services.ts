@@ -1,5 +1,6 @@
 import type { ImageMetadata } from 'astro';
 import lawn from '@/assets/projects/duval-landing/lawn-tree-line.jpg';
+import washedDriveway from '@/assets/projects/duval-landing/washed-driveway-lawn.jpg';
 import type { IconName } from '@/components/icons';
 
 /**
@@ -104,6 +105,8 @@ export const services: Service[] = [
       'Pool decks, amenity areas, and dumpster pads',
     ],
     idealFor: ['Multifamily buildings', 'Retail storefronts', 'Office entrances', 'Community amenities'],
+    image: washedDriveway,
+    imageAlt: 'Pressure-washed driveway and walkway with a freshly cut lawn in front of a Jacksonville townhome',
     seoTitle: 'Commercial Pressure Washing',
     seoDescription:
       'Commercial pressure washing for building exteriors, sidewalks, breezeways, parking areas, and common areas at multifamily and commercial properties in Northeast Florida.',

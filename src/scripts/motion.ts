@@ -24,18 +24,26 @@ function initReveals() {
   });
 
   const targets = document.querySelectorAll<HTMLElement>('[data-reveal], [data-split], [data-reveal-trigger]');
+  // Image reveals start fully clipped, and Chrome treats a fully clipped target
+  // as never intersecting. Observe the parent instead and reveal the image.
+  const revealFor = new Map<Element, HTMLElement>();
   const io = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
-        entry.target.classList.add('is-in');
-        entry.target.dispatchEvent(new CustomEvent('reveal'));
+        const el = revealFor.get(entry.target) ?? (entry.target as HTMLElement);
+        el.classList.add('is-in');
+        el.dispatchEvent(new CustomEvent('reveal'));
         io.unobserve(entry.target);
       }
     },
     { rootMargin: '0px 0px -10% 0px', threshold: 0.12 },
   );
-  targets.forEach((el) => io.observe(el));
+  targets.forEach((el) => {
+    const watch = el.dataset.reveal === 'image' && el.parentElement ? el.parentElement : el;
+    revealFor.set(watch, el);
+    io.observe(watch);
+  });
 }
 
 /* ---------- Parallax ---------- */

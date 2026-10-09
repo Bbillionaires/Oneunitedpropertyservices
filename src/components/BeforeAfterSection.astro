@@ -1,9 +1,9 @@
 ---
 /**
  * "See the Difference" — tabbed before/after comparisons from real projects.
- * Uses the WAI-ARIA tabs pattern; each panel contains a BeforeAfterSlider.
+ * Uses the WAI-ARIA tabs pattern; each panel contains a ComparisonView.
  */
-import BeforeAfterSlider from './BeforeAfterSlider.astro';
+import ComparisonView from './ComparisonView.astro';
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
 import { comparisons } from '@/data/beforeAfter';
@@ -25,7 +25,7 @@ const uid = 'ba';
         as={headingAs}
         eyebrow="Before & After"
         title={'See the *Difference.*'}
-        lead="Real results from our grounds work in Jacksonville. Drag the slider to compare."
+        lead="Real results from our work in Jacksonville. Drag a slider to compare."
       />
     </div>
 
@@ -58,14 +58,7 @@ const uid = 'ba';
             hidden={i !== 0}
             tabindex="-1"
           >
-            <BeforeAfterSlider
-              before={c.before}
-              after={c.after}
-              beforeAlt={c.beforeAlt}
-              afterAlt={c.afterAlt}
-              label={`${c.category}: ${c.title}`}
-              placeholder={c.placeholder}
-            />
+            <ComparisonView comparison={c} />
             <div class="see__caption">
               <span class="see__cat">{c.category}</span>
               <h3>{c.title}</h3>

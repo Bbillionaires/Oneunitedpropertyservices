@@ -5,7 +5,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
 import Icon from '@/components/Icon.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import BeforeAfterSlider from '@/components/BeforeAfterSlider.astro';
+import ComparisonView from '@/components/ComparisonView.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import { services, type Service } from '@/data/services';
 import { comparisons } from '@/data/beforeAfter';
@@ -24,6 +24,7 @@ const others = services.filter((s) => s.slug !== service.slug);
 // Show a relevant comparison when one exists for this service.
 const comparisonFor: Record<string, string> = {
   'lawn-grounds-care': 'Lawn & Grounds',
+  'pressure-washing': 'Pressure Washing',
 };
 const comparison = comparisons.find((c) => c.category === comparisonFor[service.slug]);
 const quoteLink = `${quoteHref}?service=${service.quoteValue}`;
@@ -92,14 +93,7 @@ const schema = [
         <div class="container">
           <SectionHeading eyebrow="See the difference" title={comparison.title} size="h2" />
           <div class="sv-ba" data-reveal>
-            <BeforeAfterSlider
-              before={comparison.before}
-              after={comparison.after}
-              beforeAlt={comparison.beforeAlt}
-              afterAlt={comparison.afterAlt}
-              label={comparison.title}
-              placeholder={comparison.placeholder}
-            />
+            <ComparisonView comparison={comparison} />
             <p class="sv-ba__project">{comparison.project}</p>
           </div>
         </div>

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
-import BeforeAfterSlider from '@/components/BeforeAfterSlider.astro';
+import ComparisonView from '@/components/ComparisonView.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import Icon from '@/components/Icon.astro';
 import { comparisons } from '@/data/beforeAfter';
@@ -16,7 +16,7 @@ const hasPlaceholders = comparisons.some((c) => c.placeholder);
   <PageHero
     eyebrow="Before & after"
     title={'See the *difference.*'}
-    lead="Real results from One United grounds work in Jacksonville. Drag any slider to compare."
+    lead="Real results from One United jobs in Jacksonville. Drag a slider to compare."
     crumbs={[{ label: 'Before & After' }]}
     compact
   />
@@ -38,15 +38,7 @@ const hasPlaceholders = comparisons.some((c) => c.placeholder);
         {
           comparisons.map((c) => (
             <li class="gallery__item" data-reveal>
-              <BeforeAfterSlider
-                before={c.before}
-                after={c.after}
-                beforeAlt={c.beforeAlt}
-                afterAlt={c.afterAlt}
-                label={`${c.category}: ${c.title}`}
-                placeholder={c.placeholder}
-                sizes="(min-width: 1100px) 33vw, (min-width: 720px) 50vw, 100vw"
-              />
+              <ComparisonView comparison={c} sizes="(min-width: 1100px) 33vw, (min-width: 720px) 50vw, 100vw" />
               <div class="gallery__caption">
                 <span class="gallery__cat">{c.category}</span>
                 <h2>{c.title}</h2>

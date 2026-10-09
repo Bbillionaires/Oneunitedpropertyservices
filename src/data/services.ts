@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 import lawn from '@/assets/projects/duval-landing/lawn-tree-line.jpg';
-import pressure from '@/assets/placeholders/sidewalk-grounds.jpg';
+import pressure from '@/assets/projects/fence-washing/fence-line-clean.jpg';
 import paint from '@/assets/placeholders/paint-roller.jpg';
 import turnover from '@/assets/placeholders/turnover-interior.jpg';
 import maintenance from '@/assets/placeholders/maintenance-tech.jpg';
@@ -81,7 +81,7 @@ export const services: Service[] = [
     ],
     idealFor: ['Multifamily buildings', 'Retail storefronts', 'Office entrances', 'Community amenities'],
     image: pressure,
-    imageAlt: 'Clean concrete sidewalk running beside a maintained lawn in a residential community',
+    imageAlt: 'Freshly washed white vinyl fence along a mowed lawn and walkway beside a commercial building',
     seoTitle: 'Commercial Pressure Washing',
     seoDescription:
       'Commercial pressure washing for building exteriors, sidewalks, breezeways, parking areas, and common areas at multifamily and commercial properties in Northeast Florida.',

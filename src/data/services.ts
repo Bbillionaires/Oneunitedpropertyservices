@@ -1,15 +1,14 @@
 import type { ImageMetadata } from 'astro';
 import lawn from '@/assets/projects/duval-landing/lawn-tree-line.jpg';
-import pressure from '@/assets/projects/fence-washing/fence-line-clean.jpg';
-import paint from '@/assets/placeholders/paint-roller.jpg';
-import turnover from '@/assets/placeholders/turnover-interior.jpg';
-import maintenance from '@/assets/placeholders/maintenance-tech.jpg';
 import type { IconName } from '@/components/icons';
 
 /**
  * Services offered. Add a new object to this array to add a service —
  * the homepage grid, services index, detail page (/services/<slug>/),
  * quote form options, and footer all read from here.
+ *
+ * Only use real One United photos. A service without an `image` is shown as a
+ * text listing — never fill the gap with stock photography.
  */
 export interface Service {
   slug: string;
@@ -27,8 +26,9 @@ export interface Service {
   scope: string[];
   /** Typical settings on a property where the service applies. */
   idealFor: string[];
-  image: ImageMetadata;
-  imageAlt: string;
+  /** Real project photo only. Omit when none is available. */
+  image?: ImageMetadata;
+  imageAlt?: string;
   seoTitle: string;
   seoDescription: string;
 }
@@ -61,6 +61,30 @@ export const services: Service[] = [
       'Recurring commercial lawn maintenance and grounds care for apartment communities, multifamily, and commercial properties in Jacksonville and Northeast Florida.',
   },
   {
+    slug: 'weed-pesticide-spraying',
+    quoteValue: 'weed-pesticide',
+    quoteLabel: 'Weed Killer & Pesticide Spraying',
+    title: 'Weed Killer & Pesticide Spraying',
+    shortTitle: 'Weed & Pest Spraying',
+    icon: 'sprayer',
+    summary:
+      'Weed control and pesticide spraying that keeps lawns, beds, and hardscapes clean and protects the landscaping a property invests in.',
+    intro:
+      'Weeds in the cracks and pests in the turf undo good grounds work fast. Scheduled spraying keeps beds, lawns, walkways, and common areas clean between visits.',
+    scope: [
+      'Weed control in lawns and beds',
+      'Sidewalk, curb, and hardscape weed spraying',
+      'Fence line and common area treatment',
+      'Lawn pest treatment',
+      'Recurring spray schedules',
+      'Pairing with mowing and bed maintenance',
+    ],
+    idealFor: ['Apartment communities', 'HOA common areas', 'Retail centers', 'Office parks'],
+    seoTitle: 'Commercial Weed Control & Pesticide Spraying',
+    seoDescription:
+      'Weed killer and pesticide spraying for apartment communities, HOAs, and commercial properties in Jacksonville and Northeast Florida.',
+  },
+  {
     slug: 'pressure-washing',
     quoteValue: 'pressure-washing',
     quoteLabel: 'Pressure Washing',
@@ -80,8 +104,6 @@ export const services: Service[] = [
       'Pool decks, amenity areas, and dumpster pads',
     ],
     idealFor: ['Multifamily buildings', 'Retail storefronts', 'Office entrances', 'Community amenities'],
-    image: pressure,
-    imageAlt: 'Freshly washed white vinyl fence along a mowed lawn and walkway beside a commercial building',
     seoTitle: 'Commercial Pressure Washing',
     seoDescription:
       'Commercial pressure washing for building exteriors, sidewalks, breezeways, parking areas, and common areas at multifamily and commercial properties in Northeast Florida.',
@@ -106,8 +128,6 @@ export const services: Service[] = [
       'Touch-ups and property improvements',
     ],
     idealFor: ['Apartment turnovers', 'Commercial buildings', 'Office suites', 'Clubhouses and amenities'],
-    image: paint,
-    imageAlt: 'Paint roller applying a fresh coat of paint to a wall',
     seoTitle: 'Commercial & Apartment Painting',
     seoDescription:
       'Interior and exterior commercial painting for apartments, multifamily communities, and commercial buildings in Jacksonville and Northeast Florida.',
@@ -132,11 +152,33 @@ export const services: Service[] = [
       'Commercial space refreshes',
     ],
     idealFor: ['Apartment units', 'Multifamily rentals', 'Office suites', 'Retail spaces'],
-    image: turnover,
-    imageAlt: 'Bright, clean apartment living room ready for a new resident',
     seoTitle: 'Apartment Turnover & Make-Ready Services',
     seoDescription:
       'Apartment turnover and make-ready services for property managers and owners — painting, repairs, and cleanup to prepare units for new residents.',
+  },
+  {
+    slug: 'home-cleaning-steaming',
+    quoteValue: 'cleaning-steaming',
+    quoteLabel: 'Home Cleaning & Steaming',
+    title: 'Home Cleaning & Steaming',
+    shortTitle: 'Cleaning & Steaming',
+    icon: 'sparkle',
+    summary:
+      'Interior cleaning and steam cleaning for homes and units — ready for move-in, after move-out, or on a regular schedule.',
+    intro:
+      'A clean unit shows better and leases faster. We handle interior cleaning and steam cleaning so homes and units are fresh for residents, owners, and showings.',
+    scope: [
+      'Move-in and move-out cleaning',
+      'Deep cleaning of kitchens and bathrooms',
+      'Steam cleaning',
+      'Post-turnover and post-construction cleanup',
+      'Recurring cleaning schedules',
+      'Common area and clubhouse cleaning',
+    ],
+    idealFor: ['Apartment units', 'Single-family rentals', 'Townhomes', 'Model units'],
+    seoTitle: 'Home Cleaning & Steam Cleaning',
+    seoDescription:
+      'Home cleaning and steam cleaning for apartments, rental homes, and units in Jacksonville and Northeast Florida.',
   },
   {
     slug: 'general-maintenance',
@@ -157,8 +199,6 @@ export const services: Service[] = [
       'Support for on-site maintenance teams',
     ],
     idealFor: ['Apartment communities', 'Commercial buildings', 'Retail centers', 'Portfolio properties'],
-    image: maintenance,
-    imageAlt: 'Maintenance technician in a hard hat and gloves servicing building equipment',
     seoTitle: 'General Property Maintenance',
     seoDescription:
       'General property maintenance support for multifamily and commercial properties in Jacksonville and Northeast Florida.',

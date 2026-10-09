@@ -1,11 +1,9 @@
 ---
 /**
- * "One Team. Multiple Solutions." — interactive service panels.
- * Desktop: horizontal panels that expand on hover/focus.
- * Tablet/mobile: large stacked cards. Reads from src/data/services.ts,
- * so new services appear automatically.
+ * "One Team. Multiple Solutions." — animated service list.
+ * Text-first by design: services are listed, not illustrated with stock.
+ * Reads from src/data/services.ts, so new services appear automatically.
  */
-import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
 import { services } from '@/data/services';
@@ -14,44 +12,29 @@ import { services } from '@/data/services';
 <section id="services" class="services section section--paper" aria-labelledby="services-title">
   <div class="container">
     <div class="services__head">
-      <SectionHeading
-        id="services-title"
-        eyebrow="What we do"
-        title={'One Team.\n*Multiple Solutions.*'}
-      />
+      <SectionHeading id="services-title" eyebrow="What we do" title={'One Team.\n*Multiple Solutions.*'} />
       <p class="lead muted services__lead" data-reveal style="--reveal-delay:200">
-        Five core services under one relationship — scheduled, coordinated, and held to one standard across your
-        property.
+        {services.length} property services under one relationship — scheduled, coordinated, and held to one standard
+        across your property.
       </p>
     </div>
 
-    <ul class="panels" role="list" data-reveal-group="110">
+    <ul class="svc-list" role="list" data-reveal-group="70">
       {
         services.map((s, i) => (
-          <li class="panel" data-reveal style={`--n:${i}`}>
-            <a class="panel__link" href={`/services/${s.slug}/`}>
-              <div class="panel__media">
-                <Image
-                  src={s.image}
-                  alt={s.imageAlt}
-                  widths={[480, 768, 1080]}
-                  sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
-                  loading="lazy"
-                />
+          <li class="svc" data-reveal>
+            <a class="svc__link" href={`/services/${s.slug}/`}>
+              <span class="svc__num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="svc__icon">
+                <Icon name={s.icon} size={26} />
+              </span>
+              <div class="svc__text">
+                <h3 class="svc__title">{s.title}</h3>
+                <p class="svc__summary">{s.summary}</p>
               </div>
-              <div class="panel__shade" />
-              <span class="panel__num">0{i + 1}</span>
-              <span class="panel__vlabel" aria-hidden="true">{s.title}</span>
-              <div class="panel__body">
-                <span class="panel__icon">
-                  <Icon name={s.icon} size={26} />
-                </span>
-                <h3 class="panel__title">{s.title}</h3>
-                <p class="panel__summary">{s.summary}</p>
-                <span class="panel__cta">
-                  Learn more <Icon name="arrowUpRight" size={18} />
-                </span>
-              </div>
+              <span class="svc__arrow" aria-hidden="true">
+                <Icon name="arrowUpRight" size={22} />
+              </span>
             </a>
           </li>
         ))
@@ -77,197 +60,131 @@ import { services } from '@/data/services';
     }
   }
 
-  .panels {
+  .svc-list {
+    border-top: 1px solid var(--line);
+  }
+  .svc {
+    border-bottom: 1px solid var(--line);
+  }
+  .svc__link {
+    position: relative;
     display: grid;
-    gap: 1rem;
-  }
-  .panel {
-    position: relative;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background: var(--ink);
-  }
-  .panel__link {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 100%;
-    min-height: 26rem;
-    color: var(--white);
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    padding: 1.5rem 0.25rem;
     text-decoration: none;
     isolation: isolate;
+    overflow: hidden;
   }
-  .panel__media {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-  }
-  .panel__media :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1.06);
-    transition:
-      transform 1400ms var(--ease-out),
-      filter 700ms var(--ease-out);
-  }
-  .panel__shade {
+  /* Ink fill sweeps in from the left on hover/focus */
+  .svc__link::before {
+    content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(180deg, rgba(13, 15, 18, 0.15) 0%, rgba(13, 15, 18, 0.55) 45%, rgba(13, 15, 18, 0.95) 100%);
-    transition: background 700ms var(--ease-out);
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 600ms var(--ease-out);
   }
-  .panel__num {
-    position: absolute;
-    top: 1.25rem;
-    left: 1.5rem;
+  .svc__num {
+    display: none;
     font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.18em;
-    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+    transition: color 400ms;
   }
-  .panel__vlabel {
-    display: none;
-  }
-  .panel__body {
-    display: grid;
-    gap: 0.9rem;
-    padding: 1.75rem 1.5rem;
-  }
-  .panel__icon {
+  .svc__icon {
     display: grid;
     place-items: center;
     width: 3.25rem;
     height: 3.25rem;
     border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--line);
+    color: var(--accent-ink);
+    transition:
+      background 400ms,
+      color 400ms,
+      border-color 400ms,
+      transform 600ms var(--ease-out);
+  }
+  .svc__text {
+    display: grid;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+  .svc__title {
+    font-size: clamp(1.25rem, 1rem + 1.4vw, 2.1rem);
+    text-transform: uppercase;
+    transition:
+      color 400ms,
+      transform 600ms var(--ease-out);
+  }
+  .svc__summary {
+    color: var(--text-muted);
+    max-width: 62ch;
+    transition: color 400ms;
+  }
+  .svc__arrow {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    transition:
+      transform 600ms var(--ease-out),
+      background 400ms,
+      border-color 400ms,
+      color 400ms;
+  }
+
+  .svc__link:is(:hover, :focus-visible)::before {
+    transform: scaleX(1);
+  }
+  .svc__link:is(:hover, :focus-visible) .svc__title {
+    color: var(--white);
+    transform: translateX(6px);
+  }
+  .svc__link:is(:hover, :focus-visible) :is(.svc__summary, .svc__num) {
+    color: var(--text-on-dark-muted);
+  }
+  .svc__link:is(:hover, :focus-visible) .svc__icon {
     background: var(--accent);
+    border-color: var(--accent);
     color: var(--ink);
-    transition: transform 700ms var(--ease-out);
+    transform: rotate(-10deg) scale(1.06);
   }
-  .panel__title {
-    font-size: var(--fs-xl);
-    text-transform: uppercase;
+  .svc__link:is(:hover, :focus-visible) .svc__arrow {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ink);
+    transform: rotate(45deg);
   }
-  .panel__summary {
-    color: rgba(255, 255, 255, 0.82);
-    max-width: 40ch;
-  }
-  .panel__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .panel__cta :global(.icon) {
-    transition: transform var(--dur) var(--ease-out);
-  }
-  .panel__link:hover .panel__media :global(img),
-  .panel__link:focus-visible .panel__media :global(img) {
-    transform: scale(1.12);
-  }
-  .panel__link:hover .panel__cta :global(.icon),
-  .panel__link:focus-visible .panel__cta :global(.icon) {
-    transform: translate(3px, -3px);
-  }
-  .panel__link:hover .panel__icon {
-    transform: rotate(-12deg) scale(1.06);
-  }
-  .panel__link:focus-visible {
-    outline-offset: -4px;
+  .svc__link:focus-visible {
+    outline-offset: -3px;
   }
 
-  @media (min-width: 640px) and (max-width: 1023px) {
-    .panels {
-      grid-template-columns: repeat(2, 1fr);
+  @media (min-width: 768px) {
+    .svc__link {
+      grid-template-columns: 3rem auto 1fr auto;
+      gap: 1.5rem 2rem;
+      padding: 2rem 1.5rem;
     }
-    .panel:last-child:nth-child(odd) {
-      grid-column: 1 / -1;
-    }
-  }
-
-  /* Desktop: expanding panels */
-  @media (min-width: 1024px) {
-    .panels {
-      display: flex;
-      gap: 0.75rem;
-      height: clamp(34rem, 72vh, 44rem);
-    }
-    .panel {
-      flex: 1 1 0;
-      min-width: 0;
-      transition: flex-grow 900ms var(--ease-out);
-    }
-    .panels:not(:hover):not(:focus-within) .panel:first-child,
-    .panel:hover,
-    .panel:focus-within {
-      flex-grow: 3.2;
-    }
-    .panel__link {
-      min-height: 0;
-    }
-    .panel__body {
-      padding: 2rem;
-      min-width: 22rem;
-    }
-    .panel__title {
-      font-size: clamp(1.25rem, 1.6vw, 1.75rem);
-    }
-    .panel__vlabel {
+    .svc__num {
       display: block;
-      position: absolute;
-      left: 50%;
-      bottom: 2rem;
-      writing-mode: vertical-rl;
-      transform: translateX(-50%) rotate(180deg);
-      font-size: 1.05rem;
-      font-weight: 800;
-      font-stretch: 112%;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      transition: opacity 400ms var(--ease-out);
     }
-    .panel__num {
-      left: 50%;
-      transform: translateX(-50%);
-      transition: left 700ms var(--ease-out), transform 700ms var(--ease-out);
+  }
+  @media (max-width: 520px) {
+    .svc__arrow {
+      display: none;
     }
-    .panel__title,
-    .panel__icon,
-    .panel__summary,
-    .panel__cta {
-      opacity: 0;
-      transform: translateY(16px);
-      transition:
-        opacity 500ms var(--ease-out),
-        transform 700ms var(--ease-out);
-    }
-    .panels:not(:hover):not(:focus-within) .panel:first-child :is(.panel__title, .panel__icon, .panel__summary, .panel__cta),
-    .panel:is(:hover, :focus-within) :is(.panel__title, .panel__icon, .panel__summary, .panel__cta) {
-      opacity: 1;
-      transform: none;
-      transition-delay: 250ms;
-    }
-    .panels:not(:hover):not(:focus-within) .panel:first-child .panel__vlabel,
-    .panel:is(:hover, :focus-within) .panel__vlabel {
-      opacity: 0;
-    }
-    .panels:not(:hover):not(:focus-within) .panel:first-child .panel__num,
-    .panel:is(:hover, :focus-within) .panel__num {
-      left: 2rem;
-      transform: none;
-    }
-    .panel:not(:hover):not(:focus-within) .panel__media :global(img) {
-      filter: grayscale(0.55) brightness(0.8);
-    }
-    .panels:not(:hover):not(:focus-within) .panel:first-child .panel__media :global(img) {
-      filter: none;
+    .svc__link {
+      grid-template-columns: auto 1fr;
+      align-items: start;
     }
   }
 </style>

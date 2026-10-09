@@ -11,10 +11,6 @@ import frontBefore from '@/assets/projects/duval-landing/townhome-front-before.j
 import frontAfter from '@/assets/projects/duval-landing/townhome-front-after.jpg';
 import fenceBefore from '@/assets/projects/duval-landing/fence-line-before.jpg';
 import fenceAfter from '@/assets/projects/duval-landing/fence-line-after.jpg';
-import panelBefore from '@/assets/projects/fence-washing/panel-before.jpg';
-import panelAfter from '@/assets/projects/fence-washing/panel-after.jpg';
-import runBefore from '@/assets/projects/fence-washing/run-before.jpg';
-import runAfter from '@/assets/projects/fence-washing/run-after.jpg';
 
 /**
  * Before & after comparisons — real One United project photos.
@@ -46,7 +42,6 @@ export interface Comparison {
 
 /** Shown publicly. Change to the property name only with the client's permission. */
 const PROJECT = 'Townhome community · Jacksonville, FL · Initial grounds cleanup, July 2026';
-const WASH_PROJECT = 'Townhome community · Jacksonville, FL · Fence washing, August 2026 · Washed and unwashed sections of the same job';
 
 export const comparisons: Comparison[] = [
   {
@@ -60,19 +55,6 @@ export const comparisons: Comparison[] = [
     beforeAlt: 'Overgrown grass island between two townhome driveways with weeds along the concrete',
     afterAlt: 'Same driveway island mowed short and cleanly edged',
     placeholder: false,
-  },
-  {
-    id: 'fence-panel-wash',
-    category: 'Pressure Washing',
-    title: 'Privacy fence washing',
-    caption: 'Mildew and green staining washed off vinyl privacy fencing, restoring a bright, uniform white.',
-    project: WASH_PROJECT,
-    before: panelBefore,
-    after: panelAfter,
-    beforeAlt: 'Vinyl privacy fence panels streaked with mildew and green staining',
-    afterAlt: 'Clean, bright white vinyl privacy fence panels after pressure washing',
-    placeholder: false,
-    sameView: false,
   },
   {
     id: 'sign-corner',
@@ -97,19 +79,6 @@ export const comparisons: Comparison[] = [
     beforeAlt: 'Overgrown grass spilling over a curved curb beside a privacy fence',
     afterAlt: 'Same curb corner mowed with a clean edge along the curb',
     placeholder: false,
-  },
-  {
-    id: 'fence-run-wash',
-    category: 'Pressure Washing',
-    title: 'Fence line washing',
-    caption: 'Long runs of community fencing cleaned top to bottom, rails and posts included.',
-    project: WASH_PROJECT,
-    before: runBefore,
-    after: runAfter,
-    beforeAlt: 'Long run of vinyl fencing with dark mildew along the rails and posts',
-    afterAlt: 'Long run of clean white vinyl fencing beside townhomes after washing',
-    placeholder: false,
-    sameView: false,
   },
   {
     id: 'utility-frontage',

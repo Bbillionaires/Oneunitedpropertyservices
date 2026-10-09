@@ -1,13 +1,12 @@
 ---
 /**
- * "Built for Properties That Need to Perform."
- * Desktop: scroll-driven list with a sticky image stage that wipes between
- * property types. Mobile: stacked image cards.
+ * "Built for Properties That Need to Perform." — property types as icon cards.
+ * Cards lift and fill on hover; needs chips stagger in on reveal.
  */
-import { Image } from 'astro:assets';
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
 import { propertyTypes } from '@/data/propertyTypes';
+import { quoteHref } from '@/data/navigation';
 
 interface Props {
   headingAs?: 'h1' | 'h2';
@@ -26,42 +25,31 @@ const { headingAs = 'h2', showLink = true } = Astro.props;
       lead="Every property type has its own standard. We build service around how yours operates — residents, tenants, customers, and owners all notice."
     />
 
-    <div class="ptypes__layout" data-ptypes>
-      <div class="ptypes__stage" aria-hidden="true">
-        {
-          propertyTypes.map((p, i) => (
-            <div class:list={['ptypes__frame', { 'is-active': i === 0 }]} data-frame={p.id}>
-              <Image src={p.image} alt="" widths={[768, 1080, 1440]} sizes="(min-width: 1024px) 55vw, 1px" loading="lazy" />
+    <ul class="ptypes__grid" role="list" data-reveal-group="80">
+      {
+        propertyTypes.map((p, i) => (
+          <li class="ptype" data-reveal>
+            <div class="ptype__top">
+              <span class="ptype__icon">
+                <Icon name={p.icon} size={28} />
+              </span>
+              <span class="ptype__num">{String(i + 1).padStart(2, '0')}</span>
             </div>
-          ))
-        }
-        <div class="ptypes__counter">
-          <span class="ptypes__current">01</span> / {String(propertyTypes.length).padStart(2, '0')}
-        </div>
-      </div>
-
-      <ol class="ptypes__list" role="list">
-        {
-          propertyTypes.map((p, i) => (
-            <li class:list={['ptype', { 'is-active': i === 0 }]} data-item={p.id} data-index={i}>
-              <div class="ptype__media">
-                <Image src={p.image} alt={p.imageAlt} widths={[480, 768, 1080]} sizes="(min-width: 1024px) 1px, 100vw" loading="lazy" />
-              </div>
-              <div class="ptype__text">
-                <span class="ptype__num">{String(i + 1).padStart(2, '0')}</span>
-                <h3 class="ptype__title">{p.title}</h3>
-                <p class="ptype__blurb">{p.blurb}</p>
-                <ul class="ptype__needs" role="list" aria-label={`Common needs for ${p.title}`}>
-                  {p.needs.map((n) => (
-                    <li>{n}</li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
+            <h3 class="ptype__title">{p.title}</h3>
+            <p class="ptype__blurb">{p.blurb}</p>
+            <ul class="ptype__needs" role="list" aria-label={`Common needs for ${p.title}`}>
+              {p.needs.map((n) => (
+                <li>{n}</li>
+              ))}
+            </ul>
+            <a class="ptype__link" href={`${quoteHref}?property=${p.quoteValue === 'portfolio' ? 'other' : p.quoteValue}${p.quoteValue === 'portfolio' ? '&program=portfolio' : ''}`}>
+              Request a quote <Icon name="arrowRight" size={16} />
+              <span class="visually-hidden"> for {p.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
 
     {
       showLink && (
@@ -76,52 +64,74 @@ const { headingAs = 'h2', showLink = true } = Astro.props;
 </section>
 
 <style>
-  .ptypes__layout {
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-  }
-  .ptypes__stage {
-    display: none;
-  }
-  .ptypes__list {
+  .ptypes__grid {
     display: grid;
-    gap: 1.25rem;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   }
   .ptype {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem 1.75rem;
+    border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    overflow: hidden;
     background: var(--paper);
-  }
-  .ptype__media {
-    aspect-ratio: 16 / 10;
     overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 600ms var(--ease-out),
+      box-shadow 600ms var(--ease-out),
+      color 400ms;
   }
-  .ptype__media :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .ptype::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ink);
+    clip-path: circle(0% at 2.9rem 2.9rem);
+    transition: clip-path 800ms var(--ease-out);
   }
-  .ptype__text {
+  .ptype__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .ptype__icon {
     display: grid;
-    gap: 0.75rem;
-    padding: 1.5rem;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--accent);
+    transition:
+      background 400ms,
+      color 400ms;
   }
   .ptype__num {
     font-size: 0.78rem;
     font-weight: 700;
-    letter-spacing: 0.18em;
-    color: var(--accent-ink);
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    transition: color 400ms;
   }
   .ptype__title {
-    font-size: var(--fs-xl);
+    font-size: 1.35rem;
     text-transform: uppercase;
   }
   .ptype__blurb {
     color: var(--text-muted);
+    transition: color 400ms;
   }
   .ptype__needs {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+    margin-top: auto;
   }
   .ptype__needs li {
     padding: 0.3rem 0.7rem;
@@ -129,165 +139,53 @@ const { headingAs = 'h2', showLink = true } = Astro.props;
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 600;
+    transition: border-color 400ms;
+  }
+  .ptype__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--accent-ink);
+  }
+  .ptype__link::after {
+    /* Whole card is clickable */
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .ptype__link :global(.icon) {
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .ptype:is(:hover, :focus-within) {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 50px rgba(13, 15, 18, 0.18);
+    color: var(--white);
+  }
+  .ptype:is(:hover, :focus-within)::before {
+    clip-path: circle(150% at 2.9rem 2.9rem);
+  }
+  .ptype:is(:hover, :focus-within) .ptype__icon {
+    background: var(--accent);
+    color: var(--ink);
+  }
+  .ptype:is(:hover, :focus-within) :is(.ptype__blurb, .ptype__num) {
+    color: var(--text-on-dark-muted);
+  }
+  .ptype:is(:hover, :focus-within) .ptype__needs li {
+    border-color: var(--line-dark);
+  }
+  .ptype:is(:hover, :focus-within) .ptype__link {
+    color: var(--accent);
+  }
+  .ptype:is(:hover, :focus-within) .ptype__link :global(.icon) {
+    transform: translateX(5px);
   }
   .ptypes__more {
     margin-top: 3rem;
   }
-
-  @media (min-width: 1024px) {
-    .ptypes__layout {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: clamp(2.5rem, 5vw, 5rem);
-      align-items: start;
-    }
-    .ptypes__stage {
-      display: block;
-      position: sticky;
-      top: calc(var(--header-h) + 1.5rem);
-      height: calc(100vh - var(--header-h) - 3rem);
-      max-height: 760px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      background: var(--ink);
-    }
-    .ptypes__frame {
-      position: absolute;
-      inset: 0;
-      clip-path: inset(0 0 0 100%);
-      transition: clip-path 1000ms var(--ease-out);
-    }
-    .ptypes__frame :global(img) {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scale(1.15);
-      transition: transform 1600ms var(--ease-out);
-    }
-    .ptypes__frame:global(.is-active) {
-      clip-path: inset(0 0 0 0);
-      z-index: 1;
-    }
-    .ptypes__frame:global(.is-active) :global(img) {
-      transform: scale(1);
-    }
-    .ptypes__frame:global(.was-active) {
-      clip-path: inset(0 0 0 0);
-      z-index: 0;
-    }
-    .ptypes__counter {
-      position: absolute;
-      z-index: 2;
-      left: 1.5rem;
-      bottom: 1.25rem;
-      padding: 0.45rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(13, 15, 18, 0.7);
-      color: var(--white);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-    }
-    .ptypes__current {
-      color: var(--accent);
-    }
-
-    .ptypes__list {
-      gap: 0;
-      padding-block: 8vh 22vh;
-    }
-    .ptype {
-      background: none;
-      border-radius: 0;
-      border-top: 1px solid var(--line);
-      overflow: visible;
-    }
-    .ptype:last-child {
-      border-bottom: 1px solid var(--line);
-    }
-    .ptype__media {
-      display: none;
-    }
-    .ptype__text {
-      padding: 2rem 0;
-      grid-template-columns: 3rem 1fr;
-      column-gap: 1rem;
-    }
-    .ptype__num {
-      padding-top: 0.45rem;
-    }
-    .ptype__title {
-      font-size: clamp(1.5rem, 2.4vw, 2.4rem);
-      color: rgba(21, 24, 28, 0.28);
-      transition: color 600ms var(--ease-out);
-    }
-    .ptype__blurb,
-    .ptype__needs {
-      grid-column: 2;
-      display: grid;
-      grid-template-rows: 0fr;
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition:
-        opacity 600ms var(--ease-out),
-        max-height 800ms var(--ease-out);
-    }
-    .ptype__needs {
-      display: flex;
-    }
-    .ptype:global(.is-active) .ptype__title {
-      color: var(--text);
-    }
-    .ptype:global(.is-active) .ptype__blurb,
-    .ptype:global(.is-active) .ptype__needs {
-      opacity: 1;
-      max-height: 12rem;
-    }
-  }
-  @media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
-    .ptype__title {
-      color: var(--text);
-    }
-    .ptype__blurb,
-    .ptype__needs {
-      opacity: 1;
-      max-height: none;
-    }
-  }
 </style>
-
-<script>
-  document.querySelectorAll<HTMLElement>('[data-ptypes]').forEach((root) => {
-    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-item]'));
-    const frames = new Map(
-      Array.from(root.querySelectorAll<HTMLElement>('[data-frame]')).map((f) => [f.dataset.frame!, f]),
-    );
-    const counter = root.querySelector<HTMLElement>('.ptypes__current');
-    let active = items[0];
-
-    const activate = (item: HTMLElement) => {
-      if (item === active) return;
-      const prevFrame = frames.get(active.dataset.item!);
-      frames.forEach((f) => f.classList.remove('was-active'));
-      prevFrame?.classList.replace('is-active', 'was-active');
-      active.classList.remove('is-active');
-      item.classList.add('is-active');
-      frames.get(item.dataset.item!)?.classList.add('is-active');
-      if (counter) counter.textContent = String(Number(item.dataset.index) + 1).padStart(2, '0');
-      active = item;
-    };
-
-    // The item crossing the middle band of the viewport becomes active.
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => e.isIntersecting && activate(e.target as HTMLElement));
-      },
-      { rootMargin: '-45% 0px -45% 0px' },
-    );
-    items.forEach((item) => {
-      io.observe(item);
-      item.addEventListener('mouseenter', () => activate(item));
-    });
-  });
-</script>

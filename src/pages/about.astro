@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
@@ -8,8 +7,6 @@ import CtaBand from '@/components/CtaBand.astro';
 import Icon from '@/components/Icon.astro';
 import type { IconName } from '@/components/icons';
 import { site } from '@/data/site';
-import heroImg from '@/assets/placeholders/office-palms.jpg';
-import teamImg from '@/assets/placeholders/planning-docs.jpg';
 
 const principles: { title: string; text: string; icon: IconName }[] = [
   { title: 'One relationship', text: 'A single point of contact for the routine work your property needs, instead of a roster of vendors.', icon: 'handshake' },
@@ -27,9 +24,8 @@ const principles: { title: string; text: string; icon: IconName }[] = [
     eyebrow="About"
     title={'One property.\nOne team.\n*One United.*'}
     lead={`${site.name} is a ${site.parent} company focused on maintenance for multifamily and commercial properties.`}
-    image={heroImg}
-    imageAlt="Glass office building framed by palm trees"
     crumbs={[{ label: 'About' }]}
+    compact
   />
 
   <section class="section section--light">
@@ -51,9 +47,6 @@ const principles: { title: string; text: string; icon: IconName }[] = [
             We are part of <strong>{site.parent}</strong>, serving {site.primaryMarket}.
           </p>
         </div>
-      </div>
-      <div class="about-media" data-reveal="image">
-        <Image src={teamImg} alt="Property manager reviewing and signing a service agreement" widths={[640, 960]} sizes="(min-width: 960px) 45vw, 100vw" loading="lazy" />
       </div>
     </div>
   </section>
@@ -103,21 +96,7 @@ const principles: { title: string; text: string; icon: IconName }[] = [
   .about-copy strong {
     color: var(--text);
   }
-  .about-media {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    aspect-ratio: 4 / 5;
-  }
-  .about-media :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  @media (min-width: 960px) {
-    .about-grid {
-      grid-template-columns: 1.2fr 1fr;
-    }
-  }
+
   .principles {
     display: grid;
     gap: 1rem;

@@ -4,7 +4,6 @@ import PageHero from '@/components/PageHero.astro';
 import PropertyTypes from '@/components/PropertyTypes.astro';
 import WhyOneUnited from '@/components/WhyOneUnited.astro';
 import PortfolioCTA from '@/components/PortfolioCTA.astro';
-import heroImg from '@/assets/placeholders/apartment-palms.jpg';
 ---
 
 <BaseLayout
@@ -15,9 +14,8 @@ import heroImg from '@/assets/placeholders/apartment-palms.jpg';
     eyebrow="Property types"
     title={'Built for properties\nthat need to *perform.*'}
     lead="Apartment communities, multifamily, commercial, retail, office, HOAs, and portfolios — each with its own standard. We build service around yours."
-    image={heroImg}
-    imageAlt="White mid-rise apartment community with balconies and palm trees"
     crumbs={[{ label: 'Property Types' }]}
+    compact
   />
   <PropertyTypes showLink={false} />
   <WhyOneUnited />

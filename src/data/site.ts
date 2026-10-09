@@ -23,7 +23,7 @@ export const site = {
   domain: 'OneUnitedPropertyServices.com',
   url: 'https://oneunitedpropertyservices.com',
   description:
-    'Complete property maintenance for apartment communities, multifamily, and commercial properties — lawn and grounds care, pressure washing, painting, turnovers, and general maintenance in Jacksonville and Northeast Florida.',
+    'Complete property maintenance for apartment communities, multifamily, and commercial properties — lawn and grounds care, weed and pesticide spraying, pressure washing, painting, turnovers, home cleaning and steaming, and general maintenance in Jacksonville and Northeast Florida.',
   primaryMarket: 'Jacksonville & Northeast Florida',
 
   contact: {

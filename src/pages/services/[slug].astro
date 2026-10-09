@@ -1,6 +1,5 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { Image } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
 import Icon from '@/components/Icon.astro';
@@ -109,9 +108,6 @@ const schema = [
           others.map((o) => (
             <li data-reveal>
               <a class="sv-other" href={`/services/${o.slug}/`}>
-                <div class="sv-other__media">
-                  <Image src={o.image} alt="" widths={[480, 720]} sizes="(min-width: 960px) 25vw, (min-width: 640px) 50vw, 100vw" loading="lazy" />
-                </div>
                 <div class="sv-other__body">
                   <Icon name={o.icon} size={22} />
                   <h3>{o.title}</h3>
@@ -215,21 +211,11 @@ const schema = [
       transform 500ms var(--ease-out),
       box-shadow 500ms var(--ease-out);
   }
-  .sv-other__media {
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-  }
-  .sv-other__media :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 1200ms var(--ease-out);
-  }
   .sv-other__body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1.1rem 1.25rem;
+    padding: 1.4rem 1.25rem;
   }
   .sv-other__body h3 {
     font-size: 1rem;
@@ -246,9 +232,6 @@ const schema = [
   .sv-other:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 40px rgba(13, 15, 18, 0.12);
-  }
-  .sv-other:hover .sv-other__media :global(img) {
-    transform: scale(1.08);
   }
   .sv-other:hover :global(.sv-other__arrow) {
     transform: translate(3px, -3px);

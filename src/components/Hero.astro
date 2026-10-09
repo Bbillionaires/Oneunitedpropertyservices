@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import type { GetImageResult } from 'astro';
 import Icon from './Icon.astro';
 import { site } from '@/data/site';
@@ -11,7 +10,6 @@ interface Props {
   imageAlt: string;
 }
 const { image, imageAlt } = Astro.props;
-const reel = services.slice(0, 4);
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -69,16 +67,6 @@ const reel = services.slice(0, 4);
       }
     </ul>
 
-    <div class="hero__reel hero-stage" style="--d:1400ms" aria-hidden="true">
-      {
-        reel.map((s, i) => (
-          <figure class="hero__reel-item" style={`--n:${i}`}>
-            <Image src={s.image} alt="" widths={[240, 480]} sizes="240px" loading="lazy" />
-            <figcaption>{s.shortTitle}</figcaption>
-          </figure>
-        ))
-      }
-    </div>
 
     <a class="hero__scroll hero-stage" style="--d:1500ms" href="#intro" aria-label="Scroll to content">
       <span class="hero__scroll-track"><span></span></span>
@@ -244,54 +232,6 @@ const reel = services.slice(0, 4);
     color: var(--accent);
   }
 
-  /* Rotating service reel — signals "complete property care" at a glance. */
-  .hero__reel {
-    display: none;
-    position: relative;
-    width: 220px;
-    aspect-ratio: 4 / 3;
-    flex: none;
-  }
-  .hero__reel-item {
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
-    opacity: 0;
-  }
-  .hero__reel-item:first-child {
-    opacity: 1;
-  }
-  :global(.motion-ok) .hero__reel-item {
-    opacity: 0;
-    animation: reel 16s infinite;
-    animation-delay: calc(var(--n) * 4s);
-  }
-  @keyframes reel {
-    0% { opacity: 0; transform: translateY(16px) scale(0.96); }
-    4%, 24% { opacity: 1; transform: none; }
-    29%, 100% { opacity: 0; transform: translateY(-12px) scale(1.02); }
-  }
-  .hero__reel-item :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .hero__reel-item figcaption {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
-  }
-
   .hero__scroll {
     display: none;
     flex-direction: column;
@@ -338,11 +278,6 @@ const reel = services.slice(0, 4);
   @media (min-width: 768px) {
     .hero__scroll {
       display: flex;
-    }
-  }
-  @media (min-width: 1100px) {
-    .hero__reel {
-      display: block;
     }
   }
   @media (max-width: 520px) {

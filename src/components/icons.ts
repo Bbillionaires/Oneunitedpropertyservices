@@ -12,6 +12,7 @@ export const icons = {
     '<path d="M9 8h5v3l2 2v8H7v-8l2-2z"/><path d="M10 8V5h3v3"/><path d="M13 5h3l2-2"/><path d="M19 7h1M19 10h2M18 4.5l1-1"/>',
   sparkle:
     '<path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"/><path d="M18.5 14l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/><path d="M5.5 15l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5L3.4 17l1.5-.6z"/>',
+  ev: '<rect x="4" y="3" width="10" height="18" rx="2"/><path d="M2 21h14"/><path d="M10 7l-3 4h4l-3 4"/><path d="M14 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-2-2"/>',
   key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l2 2M14 9l2 2"/>',
   wrench:
     '<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5"/><path d="M14.5 6.5L17 4l3 3-2.5 2.5"/>',

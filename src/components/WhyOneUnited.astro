@@ -58,7 +58,7 @@ const stats = [
     </div>
 
     <div class="why__visual" data-reveal-trigger>
-      <svg class="hub" viewBox="0 0 400 400" role="img" aria-labelledby="hub-title">
+      <svg class="hub" viewBox="-120 0 640 400" role="img" aria-labelledby="hub-title">
         <title id="hub-title">One United at the center of lawn care, pressure washing, painting, turnovers, and maintenance</title>
         <circle class="hub__orbit" cx="200" cy="200" r={R} />
         <circle class="hub__orbit hub__orbit--outer" cx="200" cy="200" r="188" />
@@ -78,7 +78,12 @@ const stats = [
             <g class="hub__node" style={`--i:${i}`}>
               <circle cx={x} cy={y} r="27" />
               <svg x={x - 12} y={y - 12} width="24" height="24" viewBox="0 0 24 24" class="hub__icon" set:html={icons[s.icon]} />
-              <text x={x} y={y + (y > 200 ? 46 : -36)} text-anchor="middle" class="hub__label">
+              <text
+                x={Math.abs(x - 200) < 20 ? x : x > 200 ? x + 34 : x - 34}
+                y={Math.abs(x - 200) < 20 ? y + (y > 200 ? 46 : -36) : y + 4}
+                text-anchor={Math.abs(x - 200) < 20 ? 'middle' : x > 200 ? 'start' : 'end'}
+                class="hub__label"
+              >
                 {s.shortTitle}
               </text>
             </g>
@@ -241,7 +246,7 @@ const stats = [
   }
   .hub__label {
     fill: var(--text-on-dark-muted);
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;

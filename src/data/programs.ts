@@ -53,7 +53,7 @@ export const whyPoints: { title: string; description: string; icon: IconName }[]
   },
   {
     title: 'Multi-Service Capability',
-    description: 'Lawn care, weed and pest spraying, pressure washing, painting, turnovers, cleaning and maintenance.',
+    description: 'Lawn care, weed and pest spraying, pressure washing, painting, turnovers, cleaning, maintenance and EV charging.',
     icon: 'layers',
   },
   {

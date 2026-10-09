@@ -68,9 +68,9 @@ export const services: Service[] = [
     shortTitle: 'Weed & Pest Spraying',
     icon: 'sprayer',
     summary:
-      'Weed control and pesticide spraying for lawns, beds, and hardscapes — scheduled and managed by One United, applied by our pest control partners.',
+      'Weed control and pesticide spraying for lawns, beds, and hardscapes — scheduled and managed by One United, applied by our licensed pest control partners.',
     intro:
-      'Weeds in the cracks and pests in the turf undo good grounds work fast. We schedule and coordinate spraying alongside your grounds maintenance, and the applications are performed by our pest control partners — so you still have one point of contact.',
+      'Weeds in the cracks and pests in the turf undo good grounds work fast. We schedule and coordinate spraying alongside your grounds maintenance, and the applications are performed by our licensed pest control partners — so you still have one point of contact.',
     scope: [
       'Weed control in lawns and beds',
       'Sidewalk, curb, and hardscape weed spraying',
@@ -202,6 +202,30 @@ export const services: Service[] = [
     seoTitle: 'General Property Maintenance',
     seoDescription:
       'General property maintenance support for multifamily and commercial properties in Jacksonville and Northeast Florida.',
+  },
+  {
+    slug: 'ev-charging-installation',
+    quoteValue: 'ev-charging',
+    quoteLabel: 'EV Charging Stations',
+    title: 'EV Charging Station Installation',
+    shortTitle: 'EV Charging',
+    icon: 'ev',
+    summary:
+      'Electric vehicle charging stations for apartment communities and commercial properties, with profit-sharing options that let the property earn from every charge.',
+    intro:
+      'Residents and tenants increasingly expect a place to charge. We help properties add EV charging stations, from planning the location to installation, with options that turn charging into a source of revenue rather than only an amenity cost.',
+    scope: [
+      'Site assessment and charger placement planning',
+      'Charging station installation',
+      'Parking space layout and signage',
+      'Profit-sharing options on charging revenue',
+      'Owner-purchased station options',
+      'Ongoing upkeep alongside your other property services',
+    ],
+    idealFor: ['Apartment communities', 'Office properties', 'Retail centers', 'HOA common parking'],
+    seoTitle: 'EV Charging Station Installation with Profit Sharing',
+    seoDescription:
+      'EV charging station installation for apartment communities and commercial properties in Jacksonville and Northeast Florida, with profit-sharing options.',
   },
 ];
 

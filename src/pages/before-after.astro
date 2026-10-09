@@ -16,7 +16,7 @@ const hasPlaceholders = comparisons.some((c) => c.placeholder);
   <PageHero
     eyebrow="Before & after"
     title={'See the *difference.*'}
-    lead="Drag any slider to compare. Pressure washing, painting, landscaping, property cleanup, and unit turnovers."
+    lead="Real results from One United grounds work in Jacksonville. Drag any slider to compare."
     crumbs={[{ label: 'Before & After' }]}
     compact
   />
@@ -28,15 +28,15 @@ const hasPlaceholders = comparisons.some((c) => c.placeholder);
           <p class="gallery__note" data-reveal>
             <Icon name="info" size={18} />
             <span>
-              The comparisons below are <strong>simulated placeholders</strong> created from stock photography to
-              demonstrate this feature. They will be replaced with real One United project photos.
+              Some comparisons below are <strong>illustrative images</strong>, not One United projects, and are
+              labeled on the image.
             </span>
           </p>
         )
       }
       <ul class="gallery__grid" role="list">
         {
-          comparisons.map((c, i) => (
+          comparisons.map((c) => (
             <li class="gallery__item" data-reveal>
               <BeforeAfterSlider
                 before={c.before}
@@ -45,12 +45,13 @@ const hasPlaceholders = comparisons.some((c) => c.placeholder);
                 afterAlt={c.afterAlt}
                 label={`${c.category}: ${c.title}`}
                 placeholder={c.placeholder}
-                sizes={i === 0 ? '(min-width: 1100px) 1320px, 100vw' : '(min-width: 960px) 50vw, 100vw'}
+                sizes="(min-width: 1100px) 33vw, (min-width: 720px) 50vw, 100vw"
               />
               <div class="gallery__caption">
                 <span class="gallery__cat">{c.category}</span>
                 <h2>{c.title}</h2>
                 <p class="muted">{c.caption}</p>
+                <p class="gallery__project">{c.project}</p>
               </div>
             </li>
           ))
@@ -102,12 +103,18 @@ const hasPlaceholders = comparisons.some((c) => c.placeholder);
   .gallery__caption h2 {
     font-size: var(--fs-xl);
   }
-  @media (min-width: 960px) {
+  .gallery__project {
+    font-size: var(--fs-sm);
+    color: var(--text-on-dark-muted);
+  }
+  @media (min-width: 720px) {
     .gallery__grid {
       grid-template-columns: 1fr 1fr;
     }
-    .gallery__item:first-child {
-      grid-column: 1 / -1;
+  }
+  @media (min-width: 1100px) {
+    .gallery__grid {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>

@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 import apartments from '@/assets/placeholders/apartment-palms.jpg';
-import multifamily from '@/assets/placeholders/multifamily-waterfront.jpg';
+import multifamily from '@/assets/projects/duval-landing/townhome-lawn.jpg';
 import commercial from '@/assets/placeholders/commercial-building.jpg';
 import retail from '@/assets/placeholders/retail-store.jpg';
 import office from '@/assets/placeholders/office-palms.jpg';
@@ -37,7 +37,7 @@ export const propertyTypes: PropertyType[] = [
       'From townhome rows to garden-style buildings, consistent exterior care keeps every building looking like part of one well-run property.',
     needs: ['Exterior painting', 'Pressure washing', 'Make-ready', 'Routine maintenance'],
     image: multifamily,
-    imageAlt: 'Multifamily residences with palm trees along a calm waterway',
+    imageAlt: 'Townhome with a freshly mowed front lawn and edged driveway in Jacksonville',
   },
   {
     id: 'commercial-buildings',

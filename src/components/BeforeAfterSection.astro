@@ -1,6 +1,6 @@
 ---
 /**
- * "See the Difference" — tabbed before/after comparisons by category.
+ * "See the Difference" — tabbed before/after comparisons from real projects.
  * Uses the WAI-ARIA tabs pattern; each panel contains a BeforeAfterSlider.
  */
 import BeforeAfterSlider from './BeforeAfterSlider.astro';
@@ -25,7 +25,7 @@ const uid = 'ba';
         as={headingAs}
         eyebrow="Before & After"
         title={'See the *Difference.*'}
-        lead="Drag the slider to compare. Every comparison is built from a reusable component, ready for real project photography."
+        lead="Real results from our grounds work in Jacksonville. Drag the slider to compare."
       />
     </div>
 
@@ -41,7 +41,7 @@ const uid = 'ba';
               aria-selected={i === 0 ? 'true' : 'false'}
               tabindex={i === 0 ? 0 : -1}
             >
-              {c.category}
+              {c.title}
             </button>
           ))
         }
@@ -67,8 +67,10 @@ const uid = 'ba';
               placeholder={c.placeholder}
             />
             <div class="see__caption">
+              <span class="see__cat">{c.category}</span>
               <h3>{c.title}</h3>
               <p class="muted">{c.caption}</p>
+              <p class="see__project">{c.project}</p>
             </div>
           </div>
         ))
@@ -164,17 +166,46 @@ const uid = 'ba';
       transform: translateY(14px);
     }
   }
+  .see__panel {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+  }
   .see__caption {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem 2rem;
-    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.75rem;
+    align-content: center;
+  }
+  .see__cat {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
   }
   .see__caption h3 {
-    font-size: var(--fs-lg);
+    font-size: var(--fs-2xl);
     text-transform: uppercase;
+  }
+  .see__caption .muted {
+    font-size: var(--fs-lg);
+    max-width: 38ch;
+  }
+  .see__project {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line-dark);
+    font-size: var(--fs-sm);
+    color: var(--text-on-dark-muted);
+  }
+  .see__panel :global(.ba) {
+    width: 100%;
+    max-width: 640px;
+  }
+  @media (min-width: 960px) {
+    .see__panel:not([hidden]) {
+      grid-template-columns: minmax(0, 640px) 1fr;
+      gap: clamp(2rem, 5vw, 4.5rem);
+    }
   }
   .see__more {
     margin-top: 2.5rem;

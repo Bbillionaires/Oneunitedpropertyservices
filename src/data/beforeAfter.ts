@@ -1,28 +1,32 @@
 import type { ImageMetadata } from 'astro';
-import pwBefore from '@/assets/placeholders/before-after/pressure-washing-before.jpg';
-import pwAfter from '@/assets/placeholders/before-after/pressure-washing-after.jpg';
-import paintBefore from '@/assets/placeholders/before-after/painting-before.jpg';
-import paintAfter from '@/assets/placeholders/before-after/painting-after.jpg';
-import lawnBefore from '@/assets/placeholders/before-after/landscaping-before.jpg';
-import lawnAfter from '@/assets/placeholders/before-after/landscaping-after.jpg';
-import cleanupBefore from '@/assets/placeholders/before-after/property-cleanup-before.jpg';
-import cleanupAfter from '@/assets/placeholders/before-after/property-cleanup-after.jpg';
-import turnBefore from '@/assets/placeholders/before-after/turnovers-before.jpg';
-import turnAfter from '@/assets/placeholders/before-after/turnovers-after.jpg';
+import signBefore from '@/assets/projects/duval-landing/sign-corner-before.jpg';
+import signAfter from '@/assets/projects/duval-landing/sign-corner-after.jpg';
+import curbBefore from '@/assets/projects/duval-landing/curb-corner-before.jpg';
+import curbAfter from '@/assets/projects/duval-landing/curb-corner-after.jpg';
+import utilityBefore from '@/assets/projects/duval-landing/utility-frontage-before.jpg';
+import utilityAfter from '@/assets/projects/duval-landing/utility-frontage-after.jpg';
+import islandBefore from '@/assets/projects/duval-landing/driveway-island-before.jpg';
+import islandAfter from '@/assets/projects/duval-landing/driveway-island-after.jpg';
+import frontBefore from '@/assets/projects/duval-landing/townhome-front-before.jpg';
+import frontAfter from '@/assets/projects/duval-landing/townhome-front-after.jpg';
+import fenceBefore from '@/assets/projects/duval-landing/fence-line-before.jpg';
+import fenceAfter from '@/assets/projects/duval-landing/fence-line-after.jpg';
 
 /**
- * Before & after comparisons.
+ * Before & after comparisons — real One United project photos.
  *
- * The current entries are SIMULATED placeholders (a stock "after" photo with a
- * digitally aged "before"). `placeholder: true` shows a visible disclosure label.
- * To add a real project: drop the two photos in src/assets/projects/, import them
- * here, and add an entry with `placeholder: false`.
+ * To add a project: put both photos in src/assets/projects/<project>/, import
+ * them here, and add an entry. Set `placeholder: true` only for illustrative
+ * (non-project) images; it shows a visible disclosure label.
  */
 export interface Comparison {
   id: string;
+  /** Service category, used to match comparisons to service pages. */
   category: string;
   title: string;
   caption: string;
+  /** Where/when the work was done. Shown under the slider. */
+  project: string;
   before: ImageMetadata;
   after: ImageMetadata;
   beforeAlt: string;
@@ -30,60 +34,80 @@ export interface Comparison {
   placeholder: boolean;
 }
 
+/** Shown publicly. Change to the property name only with the client's permission. */
+const PROJECT = 'Townhome community · Jacksonville, FL · Initial grounds cleanup, July 2026';
+
 export const comparisons: Comparison[] = [
   {
-    id: 'pressure-washing',
-    category: 'Pressure Washing',
-    title: 'Walkways & hardscape',
-    caption: 'Built-up grime and mildew removed from sidewalks and walkways.',
-    before: pwBefore,
-    after: pwAfter,
-    beforeAlt: 'Sidewalk and grounds darkened with grime and mildew',
-    afterAlt: 'Same sidewalk and grounds after cleaning',
-    placeholder: true,
+    id: 'driveway-island',
+    category: 'Lawn & Grounds',
+    title: 'Driveway islands',
+    caption: 'Overgrown turf islands between driveways cut back, edged, and brought down to a uniform height.',
+    project: PROJECT,
+    before: islandBefore,
+    after: islandAfter,
+    beforeAlt: 'Overgrown grass island between two townhome driveways with weeds along the concrete',
+    afterAlt: 'Same driveway island mowed short and cleanly edged',
+    placeholder: false,
   },
   {
-    id: 'painting',
-    category: 'Painting',
-    title: 'Exterior repaint',
-    caption: 'Weathered, stained facade brought back to a clean, uniform finish.',
-    before: paintBefore,
-    after: paintAfter,
-    beforeAlt: 'Building facade with stained, weathered paint',
-    afterAlt: 'Same building facade freshly painted white',
-    placeholder: true,
+    id: 'sign-corner',
+    category: 'Lawn & Grounds',
+    title: 'Entry corner',
+    caption: 'Tall grass and weeds around a street sign cleared to an even, maintained lawn.',
+    project: PROJECT,
+    before: signBefore,
+    after: signAfter,
+    beforeAlt: 'Corner lot with knee-high grass and weeds around a street sign',
+    afterAlt: 'Same corner mowed and cleared around the sign',
+    placeholder: false,
   },
   {
-    id: 'landscaping',
-    category: 'Landscaping',
-    title: 'Turf recovery',
-    caption: 'Stressed turf returned to a healthy, evenly cut lawn.',
-    before: lawnBefore,
-    after: lawnAfter,
-    beforeAlt: 'Dry, brown, patchy lawn in front of a commercial building',
-    afterAlt: 'Same lawn green and evenly cut',
-    placeholder: true,
+    id: 'curb-corner',
+    category: 'Lawn & Grounds',
+    title: 'Curb corner',
+    caption: 'Overgrowth along the curb line mowed and edged so the corner reads clean from the street.',
+    project: PROJECT,
+    before: curbBefore,
+    after: curbAfter,
+    beforeAlt: 'Overgrown grass spilling over a curved curb beside a privacy fence',
+    afterAlt: 'Same curb corner mowed with a clean edge along the curb',
+    placeholder: false,
   },
   {
-    id: 'property-cleanup',
-    category: 'Property Cleanup',
-    title: 'Community curb appeal',
-    caption: 'Driveways, walks, and frontage cleaned up across a residential community.',
-    before: cleanupBefore,
-    after: cleanupAfter,
-    beforeAlt: 'Residential street with dirty driveways and dull frontage',
-    afterAlt: 'Same residential street with clean driveways and bright frontage',
-    placeholder: true,
+    id: 'utility-frontage',
+    category: 'Lawn & Grounds',
+    title: 'Utility frontage',
+    caption: 'Weedy frontage around a utility box and walkway cut back and tidied.',
+    project: PROJECT,
+    before: utilityBefore,
+    after: utilityAfter,
+    beforeAlt: 'Weedy, overgrown lawn around a green utility box near a sidewalk',
+    afterAlt: 'Same frontage mowed with the walkway and utility box cleared',
+    placeholder: false,
   },
   {
-    id: 'turnovers',
-    category: 'Turnovers',
-    title: 'Unit make-ready',
-    caption: 'A tired, dingy unit prepared and refreshed for its next resident.',
-    before: turnBefore,
-    after: turnAfter,
-    beforeAlt: 'Dim apartment interior with dingy walls and floors',
-    afterAlt: 'Same apartment interior bright, clean, and move-in ready',
-    placeholder: true,
+    id: 'townhome-front',
+    category: 'Lawn & Grounds',
+    title: 'Townhome frontage',
+    caption: 'Front lawns and driveway islands restored to a consistent, cared-for look.',
+    project: PROJECT,
+    before: frontBefore,
+    after: frontAfter,
+    beforeAlt: 'Townhome front with an overgrown grass island and weeds along the driveway',
+    afterAlt: 'Same townhome front with mowed, edged lawn areas',
+    placeholder: false,
+  },
+  {
+    id: 'fence-line',
+    category: 'Lawn & Grounds',
+    title: 'Fence line',
+    caption: 'An overgrown common area along the privacy fence cleaned up and mowed.',
+    project: PROJECT,
+    before: fenceBefore,
+    after: fenceAfter,
+    beforeAlt: 'Overgrown common area along a white privacy fence with litter and a trash bin',
+    afterAlt: 'Same fence-line common area mowed and cleaned up',
+    placeholder: false,
   },
 ];

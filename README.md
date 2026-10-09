@@ -52,8 +52,8 @@ Nothing below was invented. Every missing fact is shown on the site with a visib
 - **Phone, email, business address, office hours:** `src/data/site.ts`. Set `value`, add an `href` (`tel:` / `mailto:`), and set `placeholder: false`. Phone and email are then added to the schema.org data automatically.
 - **Social profiles:** `site.social` in `src/data/site.ts`.
 - **Company story:** the placeholder block on `/about/` (`src/pages/about.astro`).
-- **Photography:** everything in `src/assets/placeholders/` is free stock photography from [Unsplash](https://unsplash.com/license) and stands in for real company photos.
-- **Before/after images:** the current pairs are **simulated**. Each “before” was made by digitally aging a stock “after” photo with `scripts/make-placeholder-befores.py`, and the site labels them that way. To add a real project, put both photos in `src/assets/projects/`, import them in `src/data/beforeAfter.ts`, and set `placeholder: false`.
+- **Photography:** real project photos live in `src/assets/projects/` (currently the Duval Landing grounds work: the hero, the lawn service image, the multifamily property type, and all before/after pairs). Everything still in `src/assets/placeholders/` is free stock photography from [Unsplash](https://unsplash.com/license) standing in for pressure washing, painting, turnovers, maintenance, and the other property types until real photos are provided.
+- **Before/after projects:** each comparison shows a public `project` label (`src/data/beforeAfter.ts`). It currently reads "Townhome community · Jacksonville, FL". Name the property there only with the client's permission. Project photos were cropped to remove camera date stamps, and their EXIF/GPS metadata was stripped.
 - **Legal pages:** fill in the bracketed items and have counsel review them.
 - **Scope lists** in `services.ts`: confirm each item matches what the company actually offers.
 

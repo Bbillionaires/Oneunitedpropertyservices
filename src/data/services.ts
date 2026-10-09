@@ -1,5 +1,5 @@
 import type { ImageMetadata } from 'astro';
-import lawn from '@/assets/placeholders/lawn-commercial.jpg';
+import lawn from '@/assets/projects/duval-landing/lawn-tree-line.jpg';
 import pressure from '@/assets/placeholders/sidewalk-grounds.jpg';
 import paint from '@/assets/placeholders/paint-roller.jpg';
 import turnover from '@/assets/placeholders/turnover-interior.jpg';
@@ -55,7 +55,7 @@ export const services: Service[] = [
     ],
     idealFor: ['Apartment communities', 'Office parks', 'Retail centers', 'HOA common areas'],
     image: lawn,
-    imageAlt: 'Freshly cut, healthy green lawn in front of a modern commercial building',
+    imageAlt: 'Mowed roadside lawn with fresh mulch rings around a row of trees along a community fence',
     seoTitle: 'Commercial Lawn Maintenance & Grounds Care',
     seoDescription:
       'Recurring commercial lawn maintenance and grounds care for apartment communities, multifamily, and commercial properties in Jacksonville and Northeast Florida.',

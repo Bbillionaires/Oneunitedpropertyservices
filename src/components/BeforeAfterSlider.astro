@@ -30,13 +30,13 @@ const {
   label = 'Before and after comparison',
   placeholder = false,
   start = 50,
-  sizes = '(min-width: 1100px) 1100px, 100vw',
+  sizes = '(min-width: 1100px) 640px, 100vw',
   eager = false,
 } = Astro.props;
 const loading = eager ? 'eager' : 'lazy';
 ---
 
-<div class="ba" style={`--pos:${start}%`} data-ba>
+<div class="ba" style={`--pos:${start}%;aspect-ratio:${after.width} / ${after.height}`} data-ba>
   <Image class="ba__img ba__img--after" src={after} alt={afterAlt} widths={[640, 1000, 1500]} sizes={sizes} loading={loading} />
   <div class="ba__before">
     <Image class="ba__img" src={before} alt={beforeAlt} widths={[640, 1000, 1500]} sizes={sizes} loading={loading} />
@@ -63,7 +63,7 @@ const loading = eager ? 'eager' : 'lazy';
   {
     placeholder && (
       <span class="ba__disclaimer">
-        <Icon name="info" size={14} /> Simulated placeholder — real project photos coming soon
+        <Icon name="info" size={14} /> Illustrative image, not a One United project
       </span>
     )
   }
@@ -73,7 +73,6 @@ const loading = eager ? 'eager' : 'lazy';
   .ba {
     --pos: 50%;
     position: relative;
-    aspect-ratio: 3 / 2;
     overflow: hidden;
     border-radius: var(--radius-lg);
     background: var(--charcoal-2);

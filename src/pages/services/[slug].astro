@@ -23,13 +23,9 @@ const others = services.filter((s) => s.slug !== service.slug);
 
 // Show a relevant comparison when one exists for this service.
 const comparisonFor: Record<string, string> = {
-  'lawn-grounds-care': 'landscaping',
-  'pressure-washing': 'pressure-washing',
-  painting: 'painting',
-  'property-turnovers': 'turnovers',
-  'general-maintenance': 'property-cleanup',
+  'lawn-grounds-care': 'Lawn & Grounds',
 };
-const comparison = comparisons.find((c) => c.id === comparisonFor[service.slug]);
+const comparison = comparisons.find((c) => c.category === comparisonFor[service.slug]);
 const quoteLink = `${quoteHref}?service=${service.quoteValue}`;
 
 const schema = [
@@ -104,6 +100,7 @@ const schema = [
               label={comparison.title}
               placeholder={comparison.placeholder}
             />
+            <p class="sv-ba__project">{comparison.project}</p>
           </div>
         </div>
       </section>
@@ -199,6 +196,12 @@ const schema = [
   }
   .sv-ba {
     margin-top: 2.5rem;
+    max-width: 720px;
+  }
+  .sv-ba__project {
+    margin-top: 1rem;
+    font-size: var(--fs-sm);
+    color: var(--text-on-dark-muted);
   }
   .sv-others {
     display: grid;

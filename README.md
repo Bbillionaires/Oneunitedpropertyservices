@@ -57,15 +57,16 @@ Nothing below was invented. Every missing fact is shown on the site with a visib
 - **Legal pages:** fill in the bracketed items and have counsel review them.
 - **Scope lists** in `services.ts`: confirm each item matches what the company actually offers.
 
-## Quote form: connecting a backend
+## Quote form: delivery by email
 
-The form UI (`src/components/QuoteForm.astro` + `src/scripts/quote-form.ts`) only calls `submitQuote()` in **`src/lib/quote.ts`**.
+The form (`src/components/QuoteForm.astro` + `src/scripts/quote-form.ts`) posts to **`/api/quote`** (`src/pages/api/quote.ts`). That is a Vercel serverless function; every other page stays static. It validates the request, drops bot submissions (a hidden honeypot field), and emails the request to you through [Resend](https://resend.com). The customer's email is the reply-to address, so you can answer by replying.
 
-- **No endpoint configured (current state):** submissions run in *preview mode*. The confirmation screen says plainly that the request was **not sent**, so there is no false success message.
-- **Connect an endpoint:** copy `.env.example` to `.env` and set `PUBLIC_QUOTE_ENDPOINT` to any HTTPS URL that accepts `multipart/form-data`: your own API, a serverless function, a CRM webhook, or a form service (Formspree, Basin, etc.). Fields are sent as form fields and photos as repeated `photos` files. Rebuild after changing it.
-- **Different integration** (e.g. a CRM SDK, JSON API, email service): change only `submitQuote()`. The `QuoteRequest` type documents the payload.
+- Photos are shrunk in the browser to 1600px JPEGs before upload to stay under Vercel's ~4.5 MB request limit, and arrive as email attachments.
+- **Required Vercel environment variables:** `RESEND_API_KEY`, `QUOTE_TO_EMAIL` (comma-separated inboxes), and `QUOTE_FROM_EMAIL` (a sender on a domain verified in Resend). See `.env.example`.
+- If they're missing, the form shows "temporarily unavailable" instead of claiming success.
+- To send requests elsewhere (a CRM or webhook), set `PUBLIC_QUOTE_ENDPOINT` or change the API route.
 
-The form also supports deep links. `/quote/?program=portfolio`, `?service=painting`, and `?property=office` pre-fill those answers. It includes a honeypot field for basic spam filtering. Add server-side validation and rate limiting on whatever endpoint you connect.
+The form also supports deep links: `/quote/?program=portfolio`, `?service=painting`, and `?property=office` pre-fill those answers.
 
 ## Design system
 

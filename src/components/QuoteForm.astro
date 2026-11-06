@@ -275,13 +275,6 @@ const fid = (name: string) => `${id}-${name}`;
     </svg>
     <h3 class="qf__done-title" data-done-title>Request received</h3>
     <p class="qf__done-text" data-done-text></p>
-    <div class="qf__done-preview" data-done-preview hidden>
-      <p>
-        <strong>Preview mode:</strong> this form isn’t connected to a delivery service yet, so your request was{' '}
-        <strong>not sent</strong>. Once an endpoint is configured (see <code>PUBLIC_QUOTE_ENDPOINT</code>), submissions
-        will be delivered automatically.
-      </p>
-    </div>
     <button type="button" class="btn btn--outline-dark" data-restart>Start a new request</button>
   </div>
 </div>
@@ -931,17 +924,5 @@ const fid = (name: string) => `${id}-${name}`;
   .qf__done-text {
     max-width: 46ch;
     color: var(--text-muted);
-  }
-  .qf__done-preview {
-    max-width: 52ch;
-    padding: 1rem 1.15rem;
-    border: 1px dashed var(--accent-ink);
-    border-radius: var(--radius);
-    background: #fbf6ea;
-    font-size: 0.9rem;
-    text-align: left;
-  }
-  .qf__done-preview code {
-    font-size: 0.85em;
   }
 </style>

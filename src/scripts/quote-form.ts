@@ -429,18 +429,11 @@ class QuoteForm {
     label.textContent = 'Submitting…';
 
     try {
-      const result = await submitQuote(this.payload(), this.files);
+      await submitQuote(this.payload(), this.files);
       const done = this.q('[data-done]');
       const name = this.value('name').split(' ')[0];
-      if (result.status === 'sent') {
-        this.q('[data-done-title]').textContent = 'Request received';
-        this.q('[data-done-text]').textContent = `Thanks${name ? `, ${name}` : ''}. Your property quote request has been sent. We’ll follow up using your preferred contact method.`;
-        this.q('[data-done-preview]').hidden = true;
-      } else {
-        this.q('[data-done-title]').textContent = 'Request ready';
-        this.q('[data-done-text]').textContent = `Thanks${name ? `, ${name}` : ''}. Your request was completed successfully in this preview.`;
-        this.q('[data-done-preview]').hidden = false;
-      }
+      this.q('[data-done-title]').textContent = 'Request received';
+      this.q('[data-done-text]').textContent = `Thanks${name ? `, ${name}` : ''}. Your property quote request has been sent. We’ll follow up using your preferred contact method.`;
       this.form.hidden = true;
       done.hidden = false;
       done.focus();

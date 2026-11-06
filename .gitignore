@@ -17,3 +17,6 @@ npm-debug.log*
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# Vercel build output
+.vercel/

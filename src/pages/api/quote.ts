@@ -1,15 +1,16 @@
 /**
  * POST /api/quote — receives the quote form (multipart/form-data) and emails it
- * to the business through Resend (https://resend.com). Runs as a Vercel
- * serverless function; every other page on the site stays static.
+ * to the business from its own Google Workspace mailbox over Gmail SMTP.
+ * Runs as a Vercel serverless function; every other page on the site stays static.
  *
- * Required environment variables (set in Vercel → Project → Settings → Environment Variables):
- *   RESEND_API_KEY     Resend API key with sending access
- *   QUOTE_TO_EMAIL     Where requests are delivered (comma-separate for several)
- *   QUOTE_FROM_EMAIL   Sender on a domain verified in Resend,
- *                      e.g. "One United Quotes <quotes@send.oneunitedpropertyservices.com>"
+ * Environment variables (Vercel → Project → Settings → Environment Variables):
+ *   GMAIL_USER          The Google Workspace address that sends the email,
+ *                       e.g. solutions@oneunitedpropertyservices.com
+ *   GMAIL_APP_PASSWORD  A Google App Password for that account (not the normal password)
+ *   QUOTE_TO_EMAIL      Optional. Where requests go (comma-separated). Defaults to GMAIL_USER.
  */
 import type { APIRoute } from 'astro';
+import nodemailer from 'nodemailer';
 import { propertyOptions, serviceOptions, frequencyOptions, contactMethodOptions } from '@/data/quoteForm';
 
 export const prerender = false;
@@ -61,11 +62,11 @@ const escapeHtml = (s: string) =>
 const clean = (v: FormDataEntryValue) => (typeof v === 'string' ? v.trim().slice(0, 4000) : '');
 
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = env('RESEND_API_KEY');
-  const to = env('QUOTE_TO_EMAIL');
-  const from = env('QUOTE_FROM_EMAIL');
-  if (!apiKey || !to || !from) {
-    console.error('[quote] Delivery not configured: set RESEND_API_KEY, QUOTE_TO_EMAIL and QUOTE_FROM_EMAIL.');
+  const user = env('GMAIL_USER');
+  const pass = env('GMAIL_APP_PASSWORD')?.replace(/\s+/g, '');
+  const to = env('QUOTE_TO_EMAIL') ?? user;
+  if (!user || !pass || !to) {
+    console.error('[quote] Delivery not configured: set GMAIL_USER and GMAIL_APP_PASSWORD.');
     return json(503, { error: 'not_configured' });
   }
 
@@ -89,7 +90,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(fields.email)) return json(422, { error: 'invalid_email' });
 
   const photos = form.getAll('photos').filter((p): p is File => p instanceof File && p.size > 0).slice(0, MAX_PHOTOS);
-  const attachments: { filename: string; content: string }[] = [];
+  const attachments: { filename: string; content: Buffer; contentType: string }[] = [];
   let total = 0;
   for (const [i, file] of photos.entries()) {
     if (!file.type.startsWith('image/')) continue;
@@ -98,7 +99,8 @@ export const POST: APIRoute = async ({ request }) => {
     const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
     attachments.push({
       filename: `property-photo-${i + 1}.${ext}`,
-      content: Buffer.from(await file.arrayBuffer()).toString('base64'),
+      content: Buffer.from(await file.arrayBuffer()),
+      contentType: file.type,
     });
   }
 
@@ -120,22 +122,25 @@ export const POST: APIRoute = async ({ request }) => {
     .map(([k, v]) => `${LABELS[k]}: ${v}`)
     .join('\n');
 
-  const res = await fetch(env('RESEND_API_URL') ?? 'https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from,
+  const transport = nodemailer.createTransport({
+    host: env('SMTP_HOST') ?? 'smtp.gmail.com',
+    port: Number(env('SMTP_PORT') ?? 465),
+    secure: (env('SMTP_PORT') ?? '465') === '465',
+    auth: { user, pass },
+  });
+
+  try {
+    await transport.sendMail({
+      from: { name: 'One United Website', address: user },
       to: to.split(',').map((s) => s.trim()).filter(Boolean),
-      reply_to: fields.email,
+      replyTo: { name: fields.name, address: fields.email },
       subject: `Quote request: ${fields.name}${fields.company ? ` (${fields.company})` : ''} — ${fields.propertyType}`,
       html,
       text,
       attachments,
-    }),
-  });
-
-  if (!res.ok) {
-    console.error('[quote] Resend error', res.status, await res.text().catch(() => ''));
+    });
+  } catch (err) {
+    console.error('[quote] SMTP send failed', err instanceof Error ? err.message : err);
     return json(502, { error: 'send_failed' });
   }
   return json(200, { ok: true });

@@ -59,10 +59,10 @@ Nothing below was invented. Every missing fact is shown on the site with a visib
 
 ## Quote form: delivery by email
 
-The form (`src/components/QuoteForm.astro` + `src/scripts/quote-form.ts`) posts to **`/api/quote`** (`src/pages/api/quote.ts`). That is a Vercel serverless function; every other page stays static. It validates the request, drops bot submissions (a hidden honeypot field), and emails the request to you through [Resend](https://resend.com). The customer's email is the reply-to address, so you can answer by replying.
+The form (`src/components/QuoteForm.astro` + `src/scripts/quote-form.ts`) posts to **`/api/quote`** (`src/pages/api/quote.ts`). That is a Vercel serverless function; every other page stays static. It validates the request, drops bot submissions (a hidden honeypot field), and emails the request from your Google Workspace mailbox (Gmail SMTP) to your inbox. The customer's email is the reply-to address, so you can answer by replying.
 
 - Photos are shrunk in the browser to 1600px JPEGs before upload to stay under Vercel's ~4.5 MB request limit, and arrive as email attachments.
-- **Required Vercel environment variables:** `RESEND_API_KEY`, `QUOTE_TO_EMAIL` (comma-separated inboxes), and `QUOTE_FROM_EMAIL` (a sender on a domain verified in Resend). See `.env.example`.
+- **Required Vercel environment variables:** `GMAIL_USER` (the sending mailbox, e.g. solutions@oneunitedpropertyservices.com) and `GMAIL_APP_PASSWORD` (a Google App Password for it). `QUOTE_TO_EMAIL` is optional and defaults to `GMAIL_USER`. See `.env.example`.
 - If they're missing, the form shows "temporarily unavailable" instead of claiming success.
 - To send requests elsewhere (a CRM or webhook), set `PUBLIC_QUOTE_ENDPOINT` or change the API route.
 

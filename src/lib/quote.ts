@@ -3,7 +3,7 @@
  *
  * The form UI only calls `submitQuote()`, which posts multipart/form-data to
  * /api/quote (src/pages/api/quote.ts). That function emails the request to the
- * business through Resend. To deliver somewhere else (a CRM, a webhook), point
+ * business from its Google Workspace mailbox (Gmail SMTP). To deliver somewhere else (a CRM, a webhook), point
  * PUBLIC_QUOTE_ENDPOINT at that endpoint or change the API route; the frontend
  * stays the same.
  */

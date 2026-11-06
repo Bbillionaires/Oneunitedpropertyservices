@@ -7,13 +7,16 @@
  *   GMAIL_USER          The Google Workspace address that sends the email,
  *                       e.g. solutions@oneunitedpropertyservices.com
  *   GMAIL_APP_PASSWORD  A Google App Password for that account (not the normal password)
- *   QUOTE_TO_EMAIL      Optional. Where requests go (comma-separated). Defaults to GMAIL_USER.
+ *   QUOTE_TO_EMAIL      Optional override. Requests go to solutions@oneunitedpropertyservices.com by default.
  */
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
 import { propertyOptions, serviceOptions, frequencyOptions, contactMethodOptions } from '@/data/quoteForm';
 
 export const prerender = false;
+
+/** Where quote requests are delivered unless QUOTE_TO_EMAIL overrides it. */
+const DEFAULT_TO = 'solutions@oneunitedpropertyservices.com';
 
 const MAX_PHOTOS = 8;
 // Vercel caps request bodies at ~4.5 MB; the browser shrinks photos before upload.
@@ -64,7 +67,7 @@ const clean = (v: FormDataEntryValue) => (typeof v === 'string' ? v.trim().slice
 export const POST: APIRoute = async ({ request }) => {
   const user = env('GMAIL_USER');
   const pass = env('GMAIL_APP_PASSWORD')?.replace(/\s+/g, '');
-  const to = env('QUOTE_TO_EMAIL') ?? user;
+  const to = env('QUOTE_TO_EMAIL') ?? DEFAULT_TO;
   if (!user || !pass || !to) {
     console.error('[quote] Delivery not configured: set GMAIL_USER and GMAIL_APP_PASSWORD.');
     return json(503, { error: 'not_configured' });

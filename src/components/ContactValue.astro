@@ -37,6 +37,12 @@ const { field, icon } = Astro.props;
     margin-top: 0.2em;
     color: var(--accent);
   }
+  .contact-value {
+    min-width: 0;
+  }
+  .contact-value a {
+    overflow-wrap: anywhere;
+  }
   .contact-value :global(.placeholder-text) {
     flex-wrap: wrap;
   }

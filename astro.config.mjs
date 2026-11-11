@@ -15,7 +15,7 @@ export default defineConfig({
   build: { format: 'directory', inlineStylesheets: 'auto' },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/404') && !page.includes('/api/'),
+      filter: (page) => !page.includes('/404') && !page.includes('/api/') && !page.includes('/unsubscribe'),
     }),
   ],
   image: {

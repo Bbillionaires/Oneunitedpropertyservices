@@ -28,7 +28,12 @@ export const site = {
 
   contact: {
     phone: { label: 'Phone', value: 'Phone number coming soon', placeholder: true },
-    email: { label: 'Email', value: 'Email address coming soon', placeholder: true },
+    email: {
+      label: 'Email',
+      value: 'solutions@oneunitedpropertyservices.com',
+      href: 'mailto:solutions@oneunitedpropertyservices.com',
+      placeholder: false,
+    },
     address: { label: 'Business address', value: 'Business address coming soon', placeholder: true },
     hours: { label: 'Office hours', value: 'Office hours coming soon', placeholder: true },
   } satisfies Record<string, ContactField>,

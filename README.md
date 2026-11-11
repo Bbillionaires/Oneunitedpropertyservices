@@ -68,6 +68,31 @@ The form (`src/components/QuoteForm.astro` + `src/scripts/quote-form.ts`) posts 
 
 The form also supports deep links: `/quote/?program=portfolio`, `?service=painting`, and `?property=office` pre-fill those answers.
 
+## Unsubscribe (marketing emails)
+
+`/unsubscribe?t=<token>` lets a recipient opt out with one click: no account, no login. The page is `noindex` and left out of the sitemap.
+
+**How it works**
+1. Each marketing email carries a signed, recipient-specific link. The token is the email address plus an expiry date, signed with HMAC-SHA256 (`src/lib/unsubscribe-token.ts`).
+2. The button posts to **`/api/unsubscribe`** (`src/pages/api/unsubscribe.ts`, a Vercel function). It verifies the signature and expiry on the server, then calls the Google Apps Script web app.
+3. The Apps Script (`integrations/google-apps-script/Unsubscribe.gs`) checks a shared secret, takes a lock, skips addresses already listed, appends a row to the **"Suppression List"** tab, and confirms the write.
+4. The page shows "You have successfully unsubscribed from One United Property Services marketing emails." only when the backend confirms. Already-listed, expired, invalid, unavailable, and failed requests each get their own message.
+5. `/api/unsubscribe?t=<token>` also accepts RFC 8058 one-click POSTs (`List-Unsubscribe=One-Click`) from mail apps.
+
+**Setup (not yet done — the integration is not live until these exist)**
+1. In the spreadsheet with the "Suppression List" tab: Extensions → Apps Script. Paste `integrations/google-apps-script/Unsubscribe.gs`. Emails go in column A; change `EMAIL_COLUMN` if your tab differs.
+2. Project Settings → Script Properties: add `SHARED_SECRET` and `SIGNING_SECRET`, each a long random string, for example from `openssl rand -hex 32`.
+3. Deploy → New deployment → Web app. Execute as **Me**, access **Anyone**. Copy the `/exec` URL.
+4. In Vercel, add environment variables, then redeploy:
+   - `UNSUBSCRIBE_APPS_SCRIPT_URL` = the `/exec` URL
+   - `UNSUBSCRIBE_APPS_SCRIPT_SECRET` = the same value as `SHARED_SECRET`
+   - `UNSUBSCRIBE_SIGNING_SECRET` = the same value as `SIGNING_SECRET`
+5. Generate links in Apps Script with `buildUnsubscribeUrl(email)`, or locally with `UNSUBSCRIBE_SIGNING_SECRET=... node scripts/unsubscribe-link.mjs person@example.com`.
+
+**Blocking future emails:** a website can't stop email sent by another tool. Whatever sends marketing email must check the Suppression List before sending: in Apps Script use `isSuppressed(email)`, `filterSuppressed(emails)`, or the example `sendMarketingEmail()`. In other email tools, import the list as a suppression list.
+
+Until the variables are set, the endpoint returns `unavailable` and the page says the request was not recorded.
+
 ## Design system
 
 - **Tokens:** `src/styles/global.css`. Colors are charcoal/ink, white, and warm paper neutrals with a brass accent (`--accent`). `--accent-ink` and `--accent-display` are the accessible accent shades for text on light backgrounds.

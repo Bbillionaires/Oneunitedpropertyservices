@@ -1,0 +1,298 @@
+---
+/**
+ * /unsubscribe — opt out of marketing emails via a signed, recipient-specific
+ * link (/unsubscribe?t=<token>). No account or login. The button posts to
+ * /api/unsubscribe, which verifies the token and records the address in the
+ * Google Sheets "Suppression List" through Apps Script. Success is shown only
+ * after the backend confirms the write.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/data/site';
+
+const contactEmail = site.contact.email.placeholder ? '' : site.contact.email.value;
+const mailto = contactEmail
+  ? `mailto:${contactEmail}?subject=${encodeURIComponent('Unsubscribe me from marketing emails')}`
+  : '';
+---
+
+<BaseLayout
+  title="Unsubscribe"
+  description={`Unsubscribe from ${site.name} marketing emails.`}
+  noindex
+  hideMobileCta
+>
+  <PageHero
+    eyebrow="Email preferences"
+    title={'Unsubscribe from\n*marketing emails.*'}
+    crumbs={[{ label: 'Unsubscribe' }]}
+    compact
+  />
+
+  <section class="section section--paper unsub">
+    <div class="container">
+      <div class="unsub__card" data-unsub data-contact={contactEmail} aria-live="polite">
+        <!-- Ready: valid-looking link -->
+        <div class="unsub__state" data-state="ready" hidden>
+          <span class="unsub__icon"><Icon name="mail" size={28} /></span>
+          <h2 class="unsub__title">Stop marketing emails?</h2>
+          <p class="unsub__text">
+            You can unsubscribe from {site.name} marketing communications at any time. Click the button below and we’ll
+            stop sending marketing emails to <strong data-email>this address</strong>.
+          </p>
+          <p class="unsub__fine">
+            You may still receive messages about service you’ve requested from us, such as quotes or scheduling.
+          </p>
+          <button type="button" class="btn btn--dark unsub__btn" data-submit>
+            <span data-label>Unsubscribe</span>
+          </button>
+          <p class="unsub__status" role="alert" data-status hidden></p>
+        </div>
+
+        <!-- Success -->
+        <div class="unsub__state" data-state="recorded" hidden>
+          <span class="unsub__icon unsub__icon--ok"><Icon name="check" size={30} strokeWidth={2.4} /></span>
+          <h2 class="unsub__title">You’re unsubscribed</h2>
+          <p class="unsub__text unsub__text--strong">
+            You have successfully unsubscribed from One United Property Services marketing emails.
+          </p>
+          <p class="unsub__fine">It can take a short time for scheduled emails to stop. Thank you for your patience.</p>
+          <a class="link-arrow unsub__home" href="/">Back to the website <Icon name="arrowRight" size={16} /></a>
+        </div>
+
+        <!-- Already processed -->
+        <div class="unsub__state" data-state="already_unsubscribed" hidden>
+          <span class="unsub__icon unsub__icon--ok"><Icon name="check" size={30} strokeWidth={2.4} /></span>
+          <h2 class="unsub__title">Already unsubscribed</h2>
+          <p class="unsub__text">
+            <strong data-email>This address</strong> is already unsubscribed from {site.name} marketing emails. No further
+            action is needed.
+          </p>
+          <a class="link-arrow unsub__home" href="/">Back to the website <Icon name="arrowRight" size={16} /></a>
+        </div>
+
+        <!-- Expired link -->
+        <div class="unsub__state" data-state="expired" hidden>
+          <span class="unsub__icon unsub__icon--warn"><Icon name="clock" size={28} /></span>
+          <h2 class="unsub__title">This link has expired</h2>
+          <p class="unsub__text">
+            For your security, unsubscribe links expire. Use the link in a more recent email from us
+            {mailto && <>, or <a href={mailto}>email us</a> and we’ll remove you</>}.
+          </p>
+        </div>
+
+        <!-- Invalid or missing link -->
+        <div class="unsub__state" data-state="invalid" hidden>
+          <span class="unsub__icon unsub__icon--warn"><Icon name="info" size={28} /></span>
+          <h2 class="unsub__title">We couldn’t read this link</h2>
+          <p class="unsub__text">
+            This unsubscribe link is incomplete or not valid. Please use the “Unsubscribe” link at the bottom of one of
+            our emails{mailto && <>, or <a href={mailto}>email us</a> and we’ll remove you</>}.
+          </p>
+        </div>
+
+        <!-- Visited without a link -->
+        <div class="unsub__state" data-state="missing" hidden>
+          <span class="unsub__icon"><Icon name="mail" size={28} /></span>
+          <h2 class="unsub__title">Unsubscribe from marketing emails</h2>
+          <p class="unsub__text">
+            You can unsubscribe from {site.name} marketing communications at any time — no account or login needed. Use
+            the “Unsubscribe” link at the bottom of any of our marketing emails to opt out instantly{
+              mailto && <>, or <a href={mailto}>email us</a> and we’ll remove you</>
+            }.
+          </p>
+        </div>
+
+        <noscript>
+          <p class="unsub__text">
+            This page needs JavaScript to process your request.{' '}
+            {mailto && <>Please <a href={mailto}>email us</a> and we’ll unsubscribe you.</>}
+          </p>
+        </noscript>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .unsub {
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  .unsub__card {
+    max-width: 640px;
+    margin-inline: auto;
+    padding: clamp(1.75rem, 5vw, 3rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--accent);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 60px rgba(13, 15, 18, 0.08);
+  }
+  .unsub__state {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  .unsub__state:not([hidden]) {
+    animation: unsub-in 500ms var(--ease-out);
+  }
+  @keyframes unsub-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  .unsub__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--accent);
+  }
+  .unsub__icon--ok {
+    background: var(--accent);
+    color: var(--ink);
+  }
+  .unsub__icon--warn {
+    background: var(--paper-2);
+    color: var(--accent-ink);
+  }
+  .unsub__title {
+    font-size: var(--fs-xl);
+    text-transform: uppercase;
+  }
+  .unsub__text {
+    color: var(--text-muted);
+    font-size: var(--fs-lg);
+    line-height: 1.55;
+  }
+  .unsub__text strong {
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .unsub__text--strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .unsub__text a {
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .unsub__fine {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .unsub__btn {
+    margin-top: 0.5rem;
+    min-width: 13rem;
+  }
+  .unsub__btn[aria-busy='true'] {
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .unsub__status {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    background: #fbeceb;
+    color: var(--danger);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+  .unsub__home {
+    margin-top: 0.5rem;
+    color: var(--accent-ink);
+  }
+  @media (max-width: 520px) {
+    .unsub__btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  type State = 'ready' | 'recorded' | 'already_unsubscribed' | 'expired' | 'invalid' | 'missing';
+
+  const root = document.querySelector<HTMLElement>('[data-unsub]');
+  if (root) {
+    const token = new URLSearchParams(location.search).get('t')?.trim() ?? '';
+
+    const show = (state: State) => {
+      root.querySelectorAll<HTMLElement>('[data-state]').forEach((el) => (el.hidden = el.dataset.state !== state));
+      root.querySelector<HTMLElement>(`[data-state="${state}"] .unsub__title`)?.setAttribute('tabindex', '-1');
+    };
+
+    /** Show the address the link is for (masked). Display only; the server verifies the signature. */
+    const peekEmail = (t: string): string | null => {
+      try {
+        let payload = t.split('.')[0].replace(/-/g, '+').replace(/_/g, '/').replace(/=+$/, '');
+        payload += '='.repeat((4 - (payload.length % 4)) % 4);
+        const bytes = Uint8Array.from(atob(payload), (c) => c.charCodeAt(0));
+        const data = JSON.parse(new TextDecoder().decode(bytes)) as { e?: unknown };
+        return typeof data.e === 'string' && data.e.includes('@') ? data.e : null;
+      } catch {
+        return null;
+      }
+    };
+    const mask = (email: string) => {
+      const [user, domain] = email.split('@');
+      return `${user.slice(0, 2)}${'•'.repeat(Math.max(1, Math.min(6, user.length - 2)))}@${domain}`;
+    };
+
+    const email = token ? peekEmail(token) : null;
+    if (!token) show('missing');
+    else if (!email || token.split('.').length !== 2) show('invalid');
+    else {
+      root.querySelectorAll<HTMLElement>('[data-email]').forEach((el) => (el.textContent = mask(email)));
+      show('ready');
+    }
+
+    const btn = root.querySelector<HTMLButtonElement>('[data-submit]');
+    const label = root.querySelector<HTMLElement>('[data-label]');
+    const status = root.querySelector<HTMLElement>('[data-status]');
+    const contact = root.dataset.contact;
+
+    const fail = (message: string) => {
+      if (!status) return;
+      status.textContent = contact ? `${message} You can also email ${contact} and we’ll remove you.` : message;
+      status.hidden = false;
+    };
+
+    btn?.addEventListener('click', async () => {
+      if (btn.getAttribute('aria-busy') === 'true') return;
+      btn.setAttribute('aria-busy', 'true');
+      if (label) label.textContent = 'Processing…';
+      if (status) status.hidden = true;
+
+      try {
+        const res = await fetch('/api/unsubscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        const data = (await res.json().catch(() => ({}))) as { status?: string };
+        // Only a backend-confirmed write is treated as success.
+        if (res.ok && (data.status === 'recorded' || data.status === 'already_unsubscribed')) {
+          show(data.status);
+        } else if (data.status === 'expired') {
+          show('expired');
+        } else if (data.status === 'invalid') {
+          show('invalid');
+        } else if (data.status === 'unavailable') {
+          fail('Unsubscribing is temporarily unavailable, so your request was not recorded. Please try again later.');
+        } else {
+          fail('We couldn’t confirm your request, so it was not recorded. Please try again.');
+        }
+      } catch {
+        fail('We couldn’t reach the server, so your request was not recorded. Check your connection and try again.');
+      } finally {
+        btn.removeAttribute('aria-busy');
+        if (label) label.textContent = 'Unsubscribe';
+      }
+      root.querySelector<HTMLElement>('[data-state]:not([hidden]) .unsub__title')?.focus();
+    });
+  }
+</script>

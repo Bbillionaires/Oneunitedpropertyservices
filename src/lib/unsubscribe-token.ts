@@ -5,7 +5,7 @@
  *   payload   = base64url(JSON {"v":1,"e":"<email>","iat":<unix>,"exp":<unix>})
  *   signature = base64url(HMAC-SHA256(UNSUBSCRIBE_SIGNING_SECRET, payload))
  * Base64url padding ("=") is stripped from both parts. The Apps Script helper
- * `buildUnsubscribeUrl()` in integrations/google-apps-script/Unsubscribe.gs
+ * `unsubBuildUrl()` in integrations/google-apps-script/Unsubscribe.gs
  * produces the same format, so links can be generated wherever emails are sent.
  */
 import { createHmac, timingSafeEqual } from 'node:crypto';

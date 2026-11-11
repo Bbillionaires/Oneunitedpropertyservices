@@ -4,7 +4,7 @@
  *
  *   UNSUBSCRIBE_SIGNING_SECRET=... node scripts/unsubscribe-link.mjs person@example.com [validDays]
  *
- * Same format as src/lib/unsubscribe-token.ts and buildUnsubscribeUrl() in
+ * Same format as src/lib/unsubscribe-token.ts and unsubBuildUrl() in
  * integrations/google-apps-script/Unsubscribe.gs.
  */
 import { createHmac } from 'node:crypto';

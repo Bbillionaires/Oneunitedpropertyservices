@@ -80,16 +80,16 @@ The form also supports deep links: `/quote/?program=portfolio`, `?service=painti
 5. `/api/unsubscribe?t=<token>` also accepts RFC 8058 one-click POSTs (`List-Unsubscribe=One-Click`) from mail apps.
 
 **Setup (not yet done — the integration is not live until these exist)**
-1. In the spreadsheet with the "Suppression List" tab: Extensions → Apps Script. Paste `integrations/google-apps-script/Unsubscribe.gs`. Emails go in column A; change `EMAIL_COLUMN` if your tab differs.
-2. Project Settings → Script Properties: add `SHARED_SECRET` and `SIGNING_SECRET`, each a long random string, for example from `openssl rand -hex 32`.
+1. At script.google.com, create a **new, separate** Apps Script project (so its `doPost` can't clash with other scripts) and paste `integrations/google-apps-script/Unsubscribe.gs`. Every other name is prefixed with `unsub`. Emails go in column A; change `UNSUB_EMAIL_COLUMN` if your tab differs.
+2. Project Settings → Script Properties: add `SHARED_SECRET` and `SIGNING_SECRET` (each a long random string, for example from `openssl rand -hex 32`) and `SPREADSHEET_ID` (the code between `/d/` and `/edit` in the sheet's URL).
 3. Deploy → New deployment → Web app. Execute as **Me**, access **Anyone**. Copy the `/exec` URL.
 4. In Vercel, add environment variables, then redeploy:
    - `UNSUBSCRIBE_APPS_SCRIPT_URL` = the `/exec` URL
    - `UNSUBSCRIBE_APPS_SCRIPT_SECRET` = the same value as `SHARED_SECRET`
    - `UNSUBSCRIBE_SIGNING_SECRET` = the same value as `SIGNING_SECRET`
-5. Generate links in Apps Script with `buildUnsubscribeUrl(email)`, or locally with `UNSUBSCRIBE_SIGNING_SECRET=... node scripts/unsubscribe-link.mjs person@example.com`.
+5. Generate links in Apps Script with `unsubBuildUrl(email)`, or locally with `UNSUBSCRIBE_SIGNING_SECRET=... node scripts/unsubscribe-link.mjs person@example.com`.
 
-**Blocking future emails:** a website can't stop email sent by another tool. Whatever sends marketing email must check the Suppression List before sending: in Apps Script use `isSuppressed(email)`, `filterSuppressed(emails)`, or the example `sendMarketingEmail()`. In other email tools, import the list as a suppression list.
+**Blocking future emails:** a website can't stop email sent by another tool. Whatever sends marketing email must check the Suppression List before sending: in Apps Script use `unsubIsSuppressed(email)`, `unsubFilterSuppressed(emails)`, or the example `unsubSendMarketingEmail()`. In other email tools, import the list as a suppression list.
 
 Until the variables are set, the endpoint returns `unavailable` and the page says the request was not recorded.
 

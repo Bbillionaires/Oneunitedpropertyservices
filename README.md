@@ -89,7 +89,7 @@ The form also supports deep links: `/quote/?program=portfolio`, `?service=painti
    - `UNSUBSCRIBE_SIGNING_SECRET` = the same value as `SIGNING_SECRET`
 5. Generate links in Apps Script with `unsubBuildUrl(email)`, or locally with `UNSUBSCRIBE_SIGNING_SECRET=... node scripts/unsubscribe-link.mjs person@example.com`.
 
-**Blocking future emails:** a website can't stop email sent by another tool. Whatever sends marketing email must check the Suppression List before sending: in Apps Script use `unsubIsSuppressed(email)`, `unsubFilterSuppressed(emails)`, or the example `unsubSendMarketingEmail()`. In other email tools, import the list as a suppression list.
+**Blocking future emails:** a website can't stop email sent by another tool. Whatever sends marketing email must check the Suppression List before sending: from a separate automation Apps Script project, paste `integrations/google-apps-script/SafeSend.gs`, add the `UNSUB_SPREADSHEET_ID` and `UNSUB_SIGNING_SECRET` script properties, and send with `oneUnitedSendMarketing(to, subject, html)`. Inside the unsubscribe project itself, `unsubIsSuppressed(email)`, `unsubFilterSuppressed(emails)`, and `unsubSendMarketingEmail()` do the same. In other email tools, import the list as a suppression list.
 
 Until the variables are set, the endpoint returns `unavailable` and the page says the request was not recorded.
 
